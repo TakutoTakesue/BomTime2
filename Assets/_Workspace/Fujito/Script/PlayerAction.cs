@@ -10,14 +10,24 @@ public class PlayerAction : MonoBehaviour
     }
     InputData inputData;
 
+    struct Elapsed
+    {
+        public float fire;
+    }
+    Elapsed elapsed;
+
     Rigidbody myRb;
 
+    [Header("各オブジェクト")]
+    [SerializeField] GameObject obj_Bullet;
+    [SerializeField] Transform tForm_Shoot;
     [SerializeField] GameObject cameraMaster;
 
     [Header("PlayerのParamater")]
     [SerializeField,Tooltip("最大体力")] int maxHp;
     [SerializeField,Tooltip("歩き速度")] float runSpeed;
     [SerializeField,Tooltip("走り速度")] float walkSpeed;
+    [SerializeField, Tooltip("銃発射間隔(Frame)")] int interval;
 
     [Header("Game設計データ")]
     [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
@@ -32,6 +42,12 @@ public class PlayerAction : MonoBehaviour
     void Start()
     {
         myRb = GetComponent<Rigidbody>();
+    }
+
+    void Fire()
+    {
+        Instantiate(obj_Bullet, tForm_Shoot.position, Quaternion.identity);
+        elapsed.fire = 0;
     }
 
     // Update is called once per frame
@@ -50,23 +66,31 @@ public class PlayerAction : MonoBehaviour
             {
                 inputData.z += 1;
             }
-            if(Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.S))
             {
                 inputData.z -= 1;
             }
-            if(Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A))
             {
                 inputData.x -= 1;
             }
-            if(Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.D))
             {
                 inputData.x += 1;
             }
+
+            if (Input.GetMouseButton(0) && elapsed.fire >= interval)
+            {
+                Fire();
+            }
+
         }
     }
 
     private void FixedUpdate()
     {
+        elapsed.fire++;
+
         Vector3 axisDirV = Vector3.Scale(cameraMaster.transform.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 axisDirH = Vector3.Scale(cameraMaster.transform.right, new Vector3(1, 0, 1)).normalized;
 
