@@ -46,7 +46,7 @@ public class PlayerAction : MonoBehaviour
 
     void Fire()
     {
-        Instantiate(obj_Bullet, tForm_Shoot.position, Quaternion.identity);
+        Instantiate(obj_Bullet, tForm_Shoot.position, gameObject.transform.rotation);
         elapsed.fire = 0;
     }
 
