@@ -57,6 +57,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
         {
             mask = mask | 1 << i.value;
         }
+        myNavi.speed = normalSpeed;
     }
 
     // 目的地に到着した場合の処理
