@@ -62,14 +62,14 @@ public class CameraAction : MonoBehaviour
     void CheckBarrier()
     {
         //Larpの速度
-        var rate = 5 * Time.deltaTime;
+        //var rate = 2 * Time.deltaTime;
         //壁判定用
         RaycastHit hit;
         //元の位置と今の距離がどのぐらい離れているか。
         if ((myCamera.transform.localPosition - camStartPos).sqrMagnitude > 0.001f)
         {
             //元の位置に戻るLarp
-            myCamera.transform.localPosition = Vector3.Lerp(myCamera.transform.localPosition, camStartPos, rate);
+            myCamera.transform.localPosition = Vector3.Lerp(myCamera.transform.localPosition, camStartPos, 1);
         }
         else if (myCamera.transform.localPosition != camStartPos)//近づいたら元の位置に。
         {
