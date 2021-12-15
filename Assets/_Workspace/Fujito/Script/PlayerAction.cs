@@ -16,7 +16,6 @@ public class PlayerAction : MonoBehaviour
     }
     Elapsed elapsed;
 
-    Rigidbody myRb;
 
     [Header("各オブジェクト")]
     [SerializeField] GameObject obj_Bullet;
@@ -37,10 +36,17 @@ public class PlayerAction : MonoBehaviour
     //Playerの内部データ
     int myHp;
     Vector3 dir;
-    
+    const float animSpeed = 2;
+    Vector3 speedRate;
+
+    Animator myAnim;
+    Rigidbody myRb;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        myAnim = GetComponent<Animator>();
         myRb = GetComponent<Rigidbody>();
     }
 
@@ -81,7 +87,12 @@ public class PlayerAction : MonoBehaviour
 
             if (Input.GetMouseButton(0) && elapsed.fire >= interval)
             {
+                myAnim.SetBool("Fire", true);
                 Fire();
+            }
+            else if(Input.GetMouseButtonUp(0))
+            {
+                myAnim.SetBool("Fire", false);
             }
 
         }
@@ -96,23 +107,34 @@ public class PlayerAction : MonoBehaviour
 
         dir = axisDirV * inputData.z + axisDirH * inputData.x;
 
+        Debug.Log(myRb.velocity.y);
+
         dir = dir.normalized;
+        dir.y = myRb.velocity.y;
 
         if (Mathf.Abs(inputData.x) > deadZone || Mathf.Abs(inputData.z) > deadZone)
         {
             transform.rotation = Quaternion.LookRotation(dir);
+            speedRate = Vector3.Scale(dir, new Vector3(1, 0, 1));
 
-            if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
+            if (Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
             {
                 dir *= runSpeed;
+                myAnim.SetFloat("Speed", speedRate.magnitude / animSpeed *(runSpeed / walkSpeed));
+                Debug.Log("Run: " + speedRate.magnitude / animSpeed * (runSpeed / walkSpeed));
             }
             else
             {
                 dir *= walkSpeed;
+                myAnim.SetFloat("Speed", speedRate.magnitude / animSpeed);
+                Debug.Log("Walk: " + speedRate.magnitude / animSpeed);
             }
         }
+        else
+        {
+            myAnim.SetFloat("Speed", 0.0f);
+        }
 
-        dir.y = myRb.velocity.y;
         myRb.velocity = dir;
     }
 }
