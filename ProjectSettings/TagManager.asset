@@ -6,8 +6,6 @@ TagManager:
   tags:
   - Enemy
   - EnemyPatrol
-  - Gun
-  - Bean
   layers:
   - Default
   - TransparentFX
