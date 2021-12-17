@@ -11,14 +11,12 @@ using UnityEngine.EventSystems;
 public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 {
 
-    [SerializeField, Header("巡回する場所")]
-    GameObject[] patrolPos = new GameObject[0];
-    [SerializeField, Header("Rayに当たるレイヤーの選択")]
-    LayerMask[] layerMask;
     [SerializeField, Header("通常状態のスピード")]
     float normalSpeed = 1.5f;
     [SerializeField, Header("ダッシュスピード（敵のことを見つけている状態のスピード）")]
     float dashSpeed = 2.0f;
+    [SerializeField, Header("巡回する場所")]
+    Transform[] patrolPos = new Transform[0];
     [SerializeField, Header("何メートル近づいたら目的地についたと判定するか")]
     float patrolDistance = 1;
     [SerializeField, Header("仰角制限")]
@@ -43,6 +41,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     }
     Elapsed elapsed;
     IEnumerator overlooking;
+    [SerializeField, Header("Rayに当たるレイヤーの選択")]
+    LayerMask[] layerMask;
     int mask = 0;   // 衝突するマスク
 
     // 自身の状態
@@ -90,6 +90,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         targetPos = Vector3.zero;
         ++patrolNo;
         patrolNo %= patrolPos.Length;   // 巡回場所の配列の数よりも大きくはなってはいけないため超えるときは0に戻る
+        targetPos = null;
     }
 
     // 死亡処理
@@ -148,6 +149,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     {
         if (myNavi.enabled)
         {
+            Debug.Log(state);
             switch (state)
             {
                 case State.normal:
@@ -168,16 +170,35 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
                                     StartCoroutine(overlooking);
                                 }
                             }
-                            PatrolArrival();
+                            // 今の目的地がないなら目的地を作る
+                            if (targetPos == null)
+                            {
+                                targetPos = patrolPos[patrolNo];
+                                myNavi.SetDestination(targetPos.position);
+                            }
+                            // 目的地がある場合
+                            else
+                            {
+                                // 巡回場所までの距離が一定以下になった場合目的地を次に進める
+                                if (Vector3.Distance(targetPos.position, transform.position) <= patrolDistance)
+                                {
+                                    PatrolArrival();
+                                }
+                            }
                         }
+                        else
+                        {
+                            Debug.LogWarning("patrolPosのLengthが0です代入してください");
+                        }
+                        break;
                     }
-                    else
-                    {
-                        Debug.LogWarning("patrolPosのLengthが0です代入してください");
-                    }
-                    break;
                 case State.discover:
                     Ray targetRay = new Ray(transform.position + Vector3.up / 2, player.transform.position - transform.position);
+=======
+                    myNavi.SetDestination(player.transform.position); //ナビメッシュが有効なら目的地へ
+
+                    Ray targetRay = new Ray(transform.position + Vector3.up, player.transform.position - transform.position);
+>>>>>>> e7ccb37c025090f29d1778dc341d0bd7bf846f8e
                     RaycastHit hit;
                     if (Physics.Raycast(targetRay, out hit, 10, mask)) {
                         // playerにRayが当たっていたらプレイヤーを見つける
@@ -206,6 +227,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
                     break;
             }
 
+<<<<<<< HEAD
             if (targetPos != Vector3.zero)
             {
                 Debug.Log(targetPos+"targetpos");
@@ -214,6 +236,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             }
 
 
+=======
+>>>>>>> e7ccb37c025090f29d1778dc341d0bd7bf846f8e
         }
     }
 }

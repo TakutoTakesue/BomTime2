@@ -16,6 +16,7 @@ public class PlayerAction : MonoBehaviour
     }
     Elapsed elapsed;
 
+    Rigidbody myRb;
 
     [Header("各オブジェクト")]
     [SerializeField] GameObject obj_Bullet;
@@ -36,15 +37,10 @@ public class PlayerAction : MonoBehaviour
     //Playerの内部データ
     int myHp;
     Vector3 dir;
-
-    Animator myAnim;
-    Rigidbody myRb;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
-        myAnim = GetComponent<Animator>();
         myRb = GetComponent<Rigidbody>();
     }
 
@@ -85,12 +81,7 @@ public class PlayerAction : MonoBehaviour
 
             if (Input.GetMouseButton(0) && elapsed.fire >= interval)
             {
-                myAnim.SetBool("Fire", true);
                 Fire();
-            }
-            else if(Input.GetMouseButtonUp(0))
-            {
-                myAnim.SetBool("Fire", false);
             }
 
         }
@@ -109,8 +100,6 @@ public class PlayerAction : MonoBehaviour
 
         if (Mathf.Abs(inputData.x) > deadZone || Mathf.Abs(inputData.z) > deadZone)
         {
-            float speedRate = 1;
-            myAnim.SetFloat("Speed", speedRate);
             transform.rotation = Quaternion.LookRotation(dir);
 
             if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
@@ -121,10 +110,6 @@ public class PlayerAction : MonoBehaviour
             {
                 dir *= walkSpeed;
             }
-        }
-        else
-        {
-            myAnim.SetFloat("Speed", 0.0f);
         }
 
         dir.y = myRb.velocity.y;
