@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerAction : MonoBehaviour
 {
+    CameraAction act_Camera;
     struct InputData
     {
         public float x, z;
@@ -16,7 +17,6 @@ public class PlayerAction : MonoBehaviour
     }
     Elapsed elapsed;
 
-    Rigidbody myRb;
 
     [Header("各オブジェクト")]
     [SerializeField] GameObject obj_Bullet;
@@ -37,11 +37,25 @@ public class PlayerAction : MonoBehaviour
     //Playerの内部データ
     int myHp;
     Vector3 dir;
-    
+
+    bool isFire;
+
+    public bool IsFire
+    {
+        get { return isFire; }
+    }
+
+    //Component
+    Rigidbody myRb;
+    Animator myAnim;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        act_Camera = cameraMaster.GetComponent<CameraAction>();
         myRb = GetComponent<Rigidbody>();
+        myAnim = GetComponent<Animator>();
     }
 
     void Fire()
@@ -53,37 +67,59 @@ public class PlayerAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isController)   //Pad
-        {
-            inputData.x = Input.GetAxis("Horizontal");
-            inputData.z = Input.GetAxis("Vertical");
-        }
-        else                //キーボード
-        {
-            inputData.x = 0;
-            inputData.z = 0;
-            if (Input.GetKey(KeyCode.W))
-            {
-                inputData.z += 1;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                inputData.z -= 1;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                inputData.x -= 1;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                inputData.x += 1;
-            }
+        inputData.x = 0;
+        inputData.z = 0;
 
-            if (Input.GetMouseButton(0) && elapsed.fire >= interval)
+        if (!isFire)
+        {
+            if (isController)   //Pad
+            {
+                inputData.x = Input.GetAxis("Horizontal");
+                inputData.z = Input.GetAxis("Vertical");
+            }
+            else                //キーボード
+            {
+                if (Input.GetKey(KeyCode.W))
+                {
+                    inputData.z += 1;
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    inputData.z -= 1;
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    inputData.x -= 1;
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    inputData.x += 1;
+                }
+            }
+        }
+        else
+        {
+            Vector3 lookPos = transform.position - cameraMaster.transform.position;
+            transform.LookAt(lookPos);
+
+            gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+
+            isFire = true;
+            if (elapsed.fire >= interval)
             {
                 Fire();
             }
-
+            myAnim.SetBool("Fire", true);
+        }
+        else
+        {
+            isFire = false;
+            elapsed.fire = interval;
+            myAnim.SetBool("Fire", false);
         }
     }
 
@@ -101,7 +137,7 @@ public class PlayerAction : MonoBehaviour
         if (Mathf.Abs(inputData.x) > deadZone || Mathf.Abs(inputData.z) > deadZone)
         {
             transform.rotation = Quaternion.LookRotation(dir);
-
+            myAnim.SetFloat("Speed", 1);
             if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
             {
                 dir *= runSpeed;
@@ -110,6 +146,10 @@ public class PlayerAction : MonoBehaviour
             {
                 dir *= walkSpeed;
             }
+        }
+        else
+        {
+            myAnim.SetFloat("Speed", 0);
         }
 
         dir.y = myRb.velocity.y;

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraAction : MonoBehaviour
 {
+    PlayerAction act_Player;
+
     struct PAD
     {
         public float horizontal;
@@ -33,9 +35,15 @@ public class CameraAction : MonoBehaviour
     Vector3 camStartPos;
     Vector3 dir;
     RaycastHit hitInfo;
+
+    public float GetRotY
+    {
+        get { return rot.y; }
+    }
     // Start is called before the first frame update
     void Start()
     {
+        act_Player = obj_Target.GetComponent<PlayerAction>();
         camStartPos = myCamera.transform.localPosition;
     }
 
@@ -87,16 +95,16 @@ public class CameraAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //padData.horizontal = Input.GetAxis("HorizontalR");
-        //padData.vertical = Input.GetAxis("VerticalR");
-
         mouseData.horizontal = Input.GetAxis("Mouse X");
         mouseData.vertical = -Input.GetAxis("Mouse Y");
 
         h = (Mathf.Abs(padData.horizontal) < Mathf.Abs(mouseData.horizontal)) ? mouseData.horizontal : padData.horizontal;
         v = (Mathf.Abs(padData.vertical) < Mathf.Abs(mouseData.vertical)) ? mouseData.vertical : padData.vertical;
 
-        rot += new Vector2(v * bias.y, h * bias.x);
+        h *= bias.x;
+        v *= bias.y;
+
+        rot += new Vector2(v, h);
 
         rot.x = Mathf.Clamp(rot.x, minPitch, maxPitch);
 
@@ -110,9 +118,8 @@ public class CameraAction : MonoBehaviour
         }
 
         transform.localEulerAngles = rot;
-        transform.position = obj_Target.gameObject.transform.position;  // + offset
+        transform.position = obj_Target.gameObject.transform.position;
 
         CheckBarrier();
-
     }
 }
