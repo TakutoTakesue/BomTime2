@@ -137,14 +137,15 @@ public class PlayerAction : MonoBehaviour
         if (Mathf.Abs(inputData.x) > deadZone || Mathf.Abs(inputData.z) > deadZone)
         {
             transform.rotation = Quaternion.LookRotation(dir);
-            myAnim.SetFloat("Speed", 1);
             if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
             {
                 dir *= runSpeed;
+                myAnim.SetFloat("Speed", 2);
             }
             else
             {
                 dir *= walkSpeed;
+                myAnim.SetFloat("Speed", 1);
             }
         }
         else
