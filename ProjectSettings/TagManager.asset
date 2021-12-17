@@ -6,7 +6,12 @@ TagManager:
   tags:
   - Enemy
   - EnemyPatrol
+<<<<<<< HEAD
   - Bullet
+=======
+  - Gun
+  - Bean
+>>>>>>> 1122cd28ed6a426442e417740a7239c43d5a44a8
   layers:
   - Default
   - TransparentFX
