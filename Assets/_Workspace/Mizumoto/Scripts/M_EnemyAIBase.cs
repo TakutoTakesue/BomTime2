@@ -45,8 +45,9 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     Animator myAnim;   // 自身のアニメーション
     IEnumerator overlooking;    // 見渡すためのコール―チン
     int mask = 0;   // 衝突するマスク
-    bool dashflg = false;   // 敵が
-   
+    bool dashFlg = false;   // 敵がダッシュしているかどうか
+    bool overlookingFlg = false;   // 敵がダッシュしているかどうか
+
 
     // 自身の状態
     public enum State
@@ -111,7 +112,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     {
         myNavi.enabled = true;
         myNavi.speed = dashSpeed;
-        dashflg = true;
+        dashFlg = true;
         StopOverlooking();
         state = State.discover; // 敵を発見
     }
@@ -123,13 +124,14 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         {
             StopCoroutine(overlooking);
             myNavi.enabled = true;
+            overlookingFlg = false;
         }
     }
 
     // 見渡す
     IEnumerator Overlooking()
     {
-        myAnim.SetBool("Overlooking", true);
+        overlookingFlg = true;
         myNavi.enabled = false;
         Vector3 rot = Vector3.zero;
         float speed = rotateSpeed;
@@ -149,10 +151,10 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             transform.localEulerAngles = rot + rightForward;
             yield return new WaitForSeconds(0.01f);
         }
-        dashflg = false;
+        dashFlg = false;
         myNavi.enabled = true;
         myNavi.speed = normalSpeed;
-        myAnim.SetBool("Overlooking", false);
+        overlookingFlg = false;
         yield break;
     }
 
@@ -232,7 +234,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 
             // アニメーション
             myAnim.SetFloat("Speed", myNavi.speed);
-            myAnim.SetBool("Dash", dashflg);
+            myAnim.SetBool("Dash", dashFlg);
 
         }
         else {
@@ -240,5 +242,6 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             myAnim.SetFloat("Speed", 0);
             myAnim.SetBool("Dash", false);
         }
+        myAnim.SetBool("Overlooking", overlookingFlg);
     }
 }
