@@ -39,7 +39,7 @@ public class ItemMaker : MonoBehaviour
                 float RanZ = Random.Range(0,Map_z);
 
                 //生成位置決定
-                Vector3 pos = new Vector3(RanX, 1.0f, RanZ);
+                Vector3 pos = new Vector3(RanX, 0.5f, RanZ);
 
                 //確率で回復アイテム位置
                 if (Random.value < Healitems_probability)
