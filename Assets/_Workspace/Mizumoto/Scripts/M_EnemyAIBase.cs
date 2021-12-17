@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(M_StateAction))]
 [RequireComponent(typeof(Rigidbody))]
-public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
+
+public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 {
 
     [SerializeField, Header("巡回する場所")]
@@ -28,6 +29,20 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
     float vigilantTime = 1;
     [SerializeField, Header("回転速度")]
     float rotateSpeed = 1;
+    [SerializeField, Header("敵を何秒見つけられなかったら敵を見失うか")]
+    float lostTagertTime = 5;
+    // 経過時間をまとめたもの
+    struct Elapsed
+    {
+        public float lostTimeElapsed;
+        public void ElapsedReset()
+        {
+            lostTimeElapsed = 0;
+        }
+
+    }
+    Elapsed elapsed;
+    IEnumerator overlooking;
     int mask = 0;   // 衝突するマスク
 
     // 自身の状態
@@ -39,23 +54,24 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
         stop,   // 停止状態
     };
 
-    Transform targetPos;    // 目標地点
+    Vector3 targetPos;    // 目標地点
     NavMeshAgent myNavi; // 自身のナビメッシュ
     GameObject player; // player
     Rigidbody myRB; // 自身のリジッドボディ
     M_StateAction enemyState;   // 自身の体力などのステータス
     State state;    // 自身の状態
     int patrolNo = 0;   // 巡回する順番
-    
+
     // Start is called before the first frame update
 
     private void Awake()
     {
-        targetPos = null;
+        targetPos = Vector3.zero;
         myNavi = GetComponent<NavMeshAgent>();
         enemyState = GetComponent<M_StateAction>();
         myRB = GetComponent<Rigidbody>();
         myRB.useGravity = false;
+        elapsed.ElapsedReset();
     }
 
     void Start()
@@ -63,7 +79,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
         player = GameObject.FindWithTag("Player");
         foreach (var i in layerMask)
         {
-            mask = mask | 1 << i.value;
+            mask += i.value;
         }
         myNavi.speed = normalSpeed;
     }
@@ -71,7 +87,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
     // 目的地に到着した場合の処理
     void PatrolArrival()
     {
-        targetPos = null;
+        targetPos = Vector3.zero;
         ++patrolNo;
         patrolNo %= patrolPos.Length;   // 巡回場所の配列の数よりも大きくはなってはいけないため超えるときは0に戻る
     }
@@ -82,14 +98,28 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
         Destroy(gameObject);
     }
 
-    public void CallDiscover() {
+    // 敵を発見したとき
+    public void CallDiscover()
+    {
         myNavi.enabled = true;
         myNavi.speed = dashSpeed;
+        StopOverlooking();
         state = State.discover; // 敵を発見
     }
 
+    // Overlookingを一時停止するときに呼び出す
+    void StopOverlooking()
+    {
+        if (overlooking != null)
+        {
+            StopCoroutine(overlooking);
+            myNavi.enabled = true;
+        }
+    }
+
     // 見渡す
-    IEnumerator Overlooking() {
+    IEnumerator Overlooking()
+    {
         myNavi.enabled = false;
         Vector3 rot = Vector3.zero;
         float speed = rotateSpeed;
@@ -107,7 +137,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
             }
 
             transform.localEulerAngles = rot + rightForward;
-           yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.01f);
         }
         myNavi.enabled = true;
         yield break;
@@ -125,15 +155,17 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
                     if (patrolPos.Length > 0)
                     {
                         // 今の目的地がないなら目的地を作る                
-                        targetPos = patrolPos[patrolNo].transform;
+                        targetPos = patrolPos[patrolNo].transform.position;
                         // 巡回場所までの距離が一定以下になった場合目的地を次に進める
                         if (Vector3.Distance(patrolPos[patrolNo].transform.position, transform.position) <= patrolDistance)
                         {
                             var overlookingAction = patrolPos[patrolNo].GetComponent<M_PatrolPosAction>();
-                            if (overlookingAction) {
+                            if (overlookingAction)
+                            {
                                 if (overlookingAction.OverlookingFlg)
                                 {
-                                    StartCoroutine(Overlooking());
+                                    overlooking = Overlooking();
+                                    StartCoroutine(overlooking);
                                 }
                             }
                             PatrolArrival();
@@ -145,16 +177,24 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
                     }
                     break;
                 case State.discover:
-                    targetPos = player.transform; //ナビメッシュが有効なら目的地へ
-
-                    Ray targetRay = new Ray(transform.position + Vector3.up, player.transform.position - transform.position);
+                    Ray targetRay = new Ray(transform.position + Vector3.up / 2, player.transform.position - transform.position);
                     RaycastHit hit;
-                    if (Physics.Raycast(targetRay, out hit, mask))
-                    {
-
-                        if (!hit.collider.CompareTag("Player"))
+                    if (Physics.Raycast(targetRay, out hit, 10, mask)) {
+                        // playerにRayが当たっていたらプレイヤーを見つける
+                        targetPos = player.transform.position;
+                        elapsed.lostTimeElapsed = 0;
+                    }
+                    else{
+                        // プレイヤーを見失った
+                        elapsed.lostTimeElapsed += Time.deltaTime;
+                        // 見失った時間が基底時間以上なら見失う
+                        if (elapsed.lostTimeElapsed >= lostTagertTime)
                         {
-                            Debug.Log(hit.collider.name);
+                            elapsed.lostTimeElapsed = 0;
+                            state = State.normal;
+                            overlooking = Overlooking();
+                            StartCoroutine(overlooking);
+                            targetPos = Vector3.zero;
                         }
                     }
                     Debug.DrawRay(targetRay.origin, targetRay.direction * 10, Color.red, 1, true);
@@ -166,12 +206,13 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller , SensingRangeCaller
                     break;
             }
 
-            if (targetPos != null)
+            if (targetPos != Vector3.zero)
             {
+                Debug.Log(targetPos+"targetpos");
                 // 今の目的地がないなら目的地を作る                
-                myNavi.SetDestination(targetPos.transform.position);
+                myNavi.SetDestination(targetPos);
             }
-            
+
 
         }
     }
