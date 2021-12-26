@@ -29,6 +29,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     float rotateSpeed = 1;
     [SerializeField, Header("敵を何秒見つけられなかったら敵を見失うか")]
     float lostTagertTime = 5;
+    [SerializeField, Header("Rayに当たるレイヤーの選択")]
+    LayerMask[] layerMask;
     // 経過時間をまとめたもの
     struct Elapsed
     {
@@ -40,10 +42,12 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 
     }
     Elapsed elapsed;
-    IEnumerator overlooking;
-    [SerializeField, Header("Rayに当たるレイヤーの選択")]
-    LayerMask[] layerMask;
+    Animator myAnim;   // 自身のアニメーション
+    IEnumerator overlooking;    // 見渡すためのコール―チン
     int mask = 0;   // 衝突するマスク
+    bool dashFlg = false;   // 敵がダッシュしているかどうか
+    bool overlookingFlg = false;   // 敵がダッシュしているかどうか
+
 
     // 自身の状態
     public enum State
@@ -76,6 +80,11 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 
     void Start()
     {
+        GameObject demonGirlMesh = transform.Find("DemonGirlMesh").gameObject;
+        myAnim = demonGirlMesh.GetComponent<Animator>();
+        if (!myAnim) {
+            Debug.LogWarning("myAnimの取得に失敗しました");
+        }
         player = GameObject.FindWithTag("Player");
         foreach (var i in layerMask)
         {
@@ -103,6 +112,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     {
         myNavi.enabled = true;
         myNavi.speed = dashSpeed;
+        dashFlg = true;
         StopOverlooking();
         state = State.discover; // 敵を発見
     }
@@ -114,12 +124,14 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         {
             StopCoroutine(overlooking);
             myNavi.enabled = true;
+            overlookingFlg = false;
         }
     }
 
     // 見渡す
     IEnumerator Overlooking()
     {
+        overlookingFlg = true;
         myNavi.enabled = false;
         Vector3 rot = Vector3.zero;
         float speed = rotateSpeed;
@@ -139,7 +151,10 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             transform.localEulerAngles = rot + rightForward;
             yield return new WaitForSeconds(0.01f);
         }
+        dashFlg = false;
         myNavi.enabled = true;
+        myNavi.speed = normalSpeed;
+        overlookingFlg = false;
         yield break;
     }
 
@@ -148,7 +163,6 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     {
         if (myNavi.enabled)
         {
-            Debug.Log(state);
             switch (state)
             {
                 case State.normal:
@@ -182,12 +196,14 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
                     Ray targetRay = new Ray(transform.position + Vector3.up / 2, player.transform.position - transform.position);
                     myNavi.SetDestination(player.transform.position); //ナビメッシュが有効なら目的地へ
                     RaycastHit hit;
-                    if (Physics.Raycast(targetRay, out hit, 10, mask)) {
+                    if (Physics.Raycast(targetRay, out hit, 10, mask))
+                    {
                         // playerにRayが当たっていたらプレイヤーを見つける
                         targetPos = player.transform.position;
                         elapsed.lostTimeElapsed = 0;
                     }
-                    else {
+                    else
+                    {
                         // プレイヤーを見失った
                         elapsed.lostTimeElapsed += Time.deltaTime;
                         // 見失った時間が基底時間以上なら見失う
@@ -209,13 +225,23 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
                     break;
             }
 
-           if (targetPos != Vector3.zero)
+            if (targetPos != Vector3.zero)
             {
-                Debug.Log(targetPos+"targetpos");
+                Debug.Log(targetPos + "targetpos");
                 // 今の目的地がないなら目的地を作る                
                 myNavi.SetDestination(targetPos);
             }
 
+            // アニメーション
+            myAnim.SetFloat("Speed", myNavi.speed);
+            myAnim.SetBool("Dash", dashFlg);
+
         }
+        else {
+            // アニメーション
+            myAnim.SetFloat("Speed", 0);
+            myAnim.SetBool("Dash", false);
+        }
+        myAnim.SetBool("Overlooking", overlookingFlg);
     }
 }
