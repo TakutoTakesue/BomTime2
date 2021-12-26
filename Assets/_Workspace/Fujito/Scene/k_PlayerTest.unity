@@ -579,7 +579,7 @@ MonoBehaviour:
   maxHp: 10
   runSpeed: 10
   walkSpeed: 5
-  toRunTime: 0
+  toRunSecond: 0
   interval: 5
   invincivleTime: 0
   deadZone: 0.2
@@ -744,11 +744,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: runSpeed
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: toRunTime
-      value: 5
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: toRunSecond
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: cameraMaster

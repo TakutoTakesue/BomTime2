@@ -148,7 +148,7 @@ public class PlayerAction : MonoBehaviour
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        if (Input.GetMouseButton(0))    //発射
+        if (Input.GetMouseButtonDown(0))    //発射
         {
             //発射の関数呼び出しはAnimaitonのEventでやってる
             isFire = true;
@@ -172,7 +172,6 @@ public class PlayerAction : MonoBehaviour
                 elapsed.invincivle = 0.0f;
             }
         }
-        elapsed.fire++;
         //FlashTest();
 
         Vector3 axisDirV = Vector3.Scale(cameraMaster.transform.forward, new Vector3(1, 0, 1)).normalized;
