@@ -579,7 +579,9 @@ MonoBehaviour:
   maxHp: 10
   runSpeed: 10
   walkSpeed: 5
+  toRunSecond: 0
   interval: 5
+  invincivleTime: 0
   deadZone: 0.2
   isController: 0
 --- !u!54 &2082076128
@@ -735,6 +737,22 @@ PrefabInstance:
     - target: {fileID: 759569165200975590, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: m_Name
       value: PolyartCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 759569165214575526, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: runSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: toRunTime
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: toRunSecond
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: cameraMaster

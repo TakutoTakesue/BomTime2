@@ -7,27 +7,32 @@ public class PlayerAction : MonoBehaviour
     CameraAction act_Camera;
     struct InputData
     {
-        public float x, z;
+        public float x, z;  //移動入力の値
     }
     InputData inputData;
 
-    struct Elapsed
+    struct Elapsed  //それぞれの経過時間変数
     {
-        public float fire;
+        public float fire;  //発射の間隔用
+        public float run;   //歩き→走りを滑らかにする用 (0~1)
+        public float invincivle;    //被弾時の点滅用
+        public float test;
     }
     Elapsed elapsed;
 
 
     [Header("各オブジェクト")]
-    [SerializeField] GameObject obj_Bullet;
-    [SerializeField] Transform tForm_Shoot;
-    [SerializeField] GameObject cameraMaster;
+    [SerializeField, Tooltip("弾のPrefab")] GameObject obj_Bullet;
+    [SerializeField, Tooltip("弾の発射位置")] Transform tForm_Shoot;
+    [SerializeField, Tooltip("カメラの親Empty")] GameObject cameraMaster;
 
     [Header("PlayerのParamater")]
-    [SerializeField,Tooltip("最大体力")] int maxHp;
-    [SerializeField,Tooltip("歩き速度")] float runSpeed;
-    [SerializeField,Tooltip("走り速度")] float walkSpeed;
-    [SerializeField, Tooltip("銃発射間隔(Frame)")] int interval;
+    [SerializeField, Tooltip("最大体力")] int maxHp;
+    [SerializeField, Tooltip("歩き速度")] float runSpeed;
+    [SerializeField, Tooltip("走り速度")] float walkSpeed;
+    [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
+    [SerializeField, Tooltip("銃発射間隔(F)")] int interval;
+    [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
     [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
@@ -35,10 +40,16 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] bool isController;
 
     //Playerの内部データ
+    float animSpeed;
     int myHp;
+    bool isDamage;
     Vector3 dir;
+    GameObject obj_Copy;
+
+    Material myMaterial;
 
     bool isFire;
+    bool test;
 
     public bool IsFire
     {
@@ -48,21 +59,53 @@ public class PlayerAction : MonoBehaviour
     //Component
     Rigidbody myRb;
     Animator myAnim;
-
+    SkinnedMeshRenderer[] mySM_Renderer;
 
     // Start is called before the first frame update
     void Start()
     {
+        obj_Copy = Instantiate(gameObject);
+        obj_Copy.SetActive(false);
+        animSpeed = 0.0f;
+
         act_Camera = cameraMaster.GetComponent<CameraAction>();
         myRb = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
+        mySM_Renderer = GetComponentsInChildren<SkinnedMeshRenderer>();
+        myMaterial = obj_Copy.GetComponentInChildren<SkinnedMeshRenderer>().material;
+        Debug.Log(mySM_Renderer.Length);
+        test = true;
     }
 
-    void Fire()
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
+        {
+            myHp--;
+            isDamage = true;
+        }
+    }
+
+    public void Fire()
     {
         Instantiate(obj_Bullet, tForm_Shoot.position, gameObject.transform.rotation);
-        elapsed.fire = 0;
     }
+
+    void FlashTest()
+    {
+        test = !test;
+        elapsed.test += Time.deltaTime;
+        if(elapsed.test >= 1.0f)
+        {
+            for(int i = 0;i < mySM_Renderer.Length;i++)
+            {
+                mySM_Renderer[i].enabled = test;
+            }
+            elapsed.test = 0.0f;
+        }
+    }
+
+
 
     // Update is called once per frame
     void Update()
@@ -105,27 +148,31 @@ public class PlayerAction : MonoBehaviour
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))    //発射
         {
-
+            //発射の関数呼び出しはAnimaitonのEventでやってる
             isFire = true;
-            if (elapsed.fire >= interval)
-            {
-                Fire();
-            }
             myAnim.SetBool("Fire", true);
         }
-        else
+        if(Input.GetMouseButtonUp(0))
         {
             isFire = false;
-            elapsed.fire = interval;
             myAnim.SetBool("Fire", false);
         }
     }
 
     private void FixedUpdate()
     {
-        elapsed.fire++;
+        if(isDamage)
+        {
+            elapsed.invincivle += Time.deltaTime;
+            if(elapsed.invincivle >= invincivleTime)
+            {
+                isDamage = false;
+                elapsed.invincivle = 0.0f;
+            }
+        }
+        //FlashTest();
 
         Vector3 axisDirV = Vector3.Scale(cameraMaster.transform.forward, new Vector3(1, 0, 1)).normalized;
         Vector3 axisDirH = Vector3.Scale(cameraMaster.transform.right, new Vector3(1, 0, 1)).normalized;
@@ -139,17 +186,31 @@ public class PlayerAction : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(dir);
             if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
             {
-                dir *= runSpeed;
-                myAnim.SetFloat("Speed", 2);
+                elapsed.run += Time.deltaTime / toRunSecond;
             }
             else
             {
-                dir *= walkSpeed;
-                myAnim.SetFloat("Speed", 1);
+                elapsed.run -= Time.deltaTime / toRunSecond;
             }
+
+            elapsed.run = Mathf.Clamp01(elapsed.run);
+            dir *= Mathf.Lerp(walkSpeed, runSpeed, elapsed.run);
+
+            animSpeed = Mathf.Lerp(1.0f, runSpeed / walkSpeed, elapsed.run);
+            animSpeed = Mathf.Clamp(animSpeed, 1.0f, runSpeed / walkSpeed);
+
+
+            if (isFire)
+            {
+                animSpeed = 1.0f;
+            }
+
+            myAnim.SetFloat("Speed", animSpeed);
         }
         else
         {
+            elapsed.run = 0.0f;
+            animSpeed = 1.0f;
             myAnim.SetFloat("Speed", 0);
         }
 
