@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     CameraAction act_Camera;
+    M_StateAction act_MState;
+    Play_UI_Managet mng_PlayUI;
     struct InputData
     {
         public float x, z;  //移動入力の値
@@ -20,11 +22,18 @@ public class PlayerAction : MonoBehaviour
     }
     Elapsed elapsed;
 
+    enum FireMode
+    {
+        single,
+        diffusion,
+    }
+    [SerializeField] FireMode fireMode;
 
     [Header("各オブジェクト")]
     [SerializeField, Tooltip("弾のPrefab")] GameObject obj_Bullet;
-    [SerializeField, Tooltip("弾の発射位置")] Transform tForm_Shoot;
+    [SerializeField, Tooltip("弾の発射位置")] Transform[] tForm_Shoot;
     [SerializeField, Tooltip("カメラの親Empty")] GameObject cameraMaster;
+    [SerializeField, Tooltip("発射Posの親Empty")] GameObject shootPosManager;
 
     [Header("PlayerのParamater")]
     [SerializeField, Tooltip("最大体力")] int maxHp;
@@ -38,11 +47,14 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
 
     [SerializeField] bool isController;
+    [SerializeField] Vector3 fireOffset;
+    [SerializeField] Vector3 shootPosOffset;
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
     int myHp;               //現在のHP
     bool isDamage;          //被弾中か
+    int cntBean;
 
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
@@ -71,6 +83,8 @@ public class PlayerAction : MonoBehaviour
         animSpeed = 0.0f;
 
         act_Camera = cameraMaster.GetComponent<CameraAction>();
+        act_MState = GetComponent<M_StateAction>();
+
         myRb = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
         mySM_Renderer = GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -80,6 +94,7 @@ public class PlayerAction : MonoBehaviour
     private void Ready()
     {
         myHp = maxHp;
+        cntBean = 0;
         animSpeed = 1.0f;
         isDamage = false;
         isFire = false;
@@ -98,7 +113,23 @@ public class PlayerAction : MonoBehaviour
 
     public void Fire()
     {
-        Instantiate(obj_Bullet, tForm_Shoot.position, gameObject.transform.rotation);
+        switch(fireMode)
+        {
+            case FireMode.single:
+                GameObject bullet_0 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
+                bullet_0.transform.LookAt((tForm_Shoot[0].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[0].position);
+                break;
+            case FireMode.diffusion:
+                for(int i = 0;i < tForm_Shoot.Length;i++)
+                {
+                    GameObject bullet_1 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
+                    bullet_1.transform.LookAt((tForm_Shoot[i].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[i].position);
+
+                    //Vector3 rot_Bullet = new Vector3(0, bullet_1.transform.eulerAngles.y, bullet_1.transform.eulerAngles.z);
+                    //bullet_1.transform.eulerAngles = rot_Bullet;
+                }
+                break;
+        }
     }
 
     void FlashTest()
@@ -120,6 +151,9 @@ public class PlayerAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        shootPosManager.transform.position = gameObject.transform.position;
+
+        Debug.Log(shootPosManager.transform.position);
         inputData.x = 0;
         inputData.z = 0;
 
