@@ -29,15 +29,19 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     float rotateSpeed = 1;
     [SerializeField, Header("敵を何秒見つけられなかったら敵を見失うか")]
     float lostTagertTime = 5;
+    [SerializeField, Header("敵を攻撃したときのインターバル")]
+    float attackInterval = 1;
     [SerializeField, Header("Rayに当たるレイヤーの選択")]
     LayerMask[] layerMask;
     // 経過時間をまとめたもの
     struct Elapsed
     {
         public float lostTimeElapsed;
+        public float attackTimeElapsed;
         public void ElapsedReset()
         {
             lostTimeElapsed = 0;
+            attackTimeElapsed = 0;
         }
 
     }
@@ -158,9 +162,26 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         yield break;
     }
 
-    // Update is called once per frame
-    protected virtual void Update()
+    private void OnCollisionEnter(Collision collision)
     {
+       
+        if (collision.gameObject.tag == "Player") {
+            if (elapsed.attackTimeElapsed <= 0 && state == State.discover)
+            {
+                myAnim.SetTrigger("Attack");
+                elapsed.attackTimeElapsed = attackInterval;
+            }
+        }
+    }
+
+    // Update is called once per frame
+    protected virtual void FixedUpdate()
+    {
+        if (elapsed.attackTimeElapsed > 0)
+        {
+            elapsed.attackTimeElapsed -= Time.deltaTime;
+            return;
+        }
         if (myNavi.enabled)
         {
             switch (state)
