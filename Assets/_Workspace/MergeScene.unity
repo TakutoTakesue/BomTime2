@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 7770c412ca139944690f130a129b774a, type: 2}
 --- !u!4 &294137230 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8147641232924773147, guid: 156125bede323b74780259e61bd13784, type: 3}
@@ -241,6 +241,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6807256085718349131, guid: 6f392c0a304322e42a0f4d05e3761982, type: 3}
+      propertyPath: patrolDistance
+      value: 2.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6807256085718349131, guid: 6f392c0a304322e42a0f4d05e3761982, type: 3}
       propertyPath: patrolPos.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -337,6 +341,10 @@ PrefabInstance:
     - target: {fileID: 759569165200975590, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: m_Name
       value: PolyartCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 759569165200975590, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7542639076264869782, guid: 4732424fb08bfb74eaefa846e26e259a, type: 3}
       propertyPath: cameraMaster
@@ -765,6 +773,14 @@ PrefabInstance:
     - target: {fileID: 3441144222334271669, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
       propertyPath: m_Name
       value: Maps
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680655832954019, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680656023942980, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10.02
       objectReference: {fileID: 0}
     - target: {fileID: 8462054117377047119, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
       propertyPath: m_RootOrder
