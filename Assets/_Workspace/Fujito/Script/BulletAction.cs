@@ -8,7 +8,6 @@ public class BulletAction : MonoBehaviour
     [SerializeField] float addPower;
     [SerializeField, Tooltip("発射後に消えるまでの秒数")] float destroySeconds;
 
-
     // Start is called before the first frame update
     void Start()
     {

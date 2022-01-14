@@ -13,7 +13,7 @@ public class PlayerAction : MonoBehaviour
 
     struct Elapsed  //それぞれの経過時間変数
     {
-        public float fire;  //発射の間隔用
+        //public float fire;  //発射の間隔用
         public float run;   //歩き→走りを滑らかにする用 (0~1)
         public float invincivle;    //被弾時の点滅用
         public float test;
@@ -31,7 +31,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("歩き速度")] float runSpeed;
     [SerializeField, Tooltip("走り速度")] float walkSpeed;
     [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
-    [SerializeField, Tooltip("銃発射間隔(F)")] int interval;
+    //[SerializeField, Tooltip("銃発射間隔(F)")] int interval;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
@@ -40,32 +40,34 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] bool isController;
 
     //Playerの内部データ
-    float animSpeed;
-    int myHp;
-    bool isDamage;
-    Vector3 dir;
-    GameObject obj_Copy;
+    float animSpeed;        //走るときのAnimationスピード
+    int myHp;               //現在のHP
+    bool isDamage;          //被弾中か
 
-    Material myMaterial;
+    Vector3 dir;            //進む方向ベクトル
+    GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
 
-    bool isFire;
+
+    bool isFire;            //true: 発砲中
     bool test;
+
+
+    //Component
+    Rigidbody myRb;
+    Animator myAnim;
+    SkinnedMeshRenderer[] mySM_Renderer;
+    Material myMaterial;
 
     public bool IsFire
     {
         get { return isFire; }
     }
 
-    //Component
-    Rigidbody myRb;
-    Animator myAnim;
-    SkinnedMeshRenderer[] mySM_Renderer;
-
     // Start is called before the first frame update
     void Start()
     {
         obj_Copy = Instantiate(gameObject);
-        obj_Copy.SetActive(false);
+        obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
 
         act_Camera = cameraMaster.GetComponent<CameraAction>();
@@ -73,8 +75,16 @@ public class PlayerAction : MonoBehaviour
         myAnim = GetComponent<Animator>();
         mySM_Renderer = GetComponentsInChildren<SkinnedMeshRenderer>();
         myMaterial = obj_Copy.GetComponentInChildren<SkinnedMeshRenderer>().material;
-        Debug.Log(mySM_Renderer.Length);
-        test = true;
+    }
+
+    private void Ready()
+    {
+        myHp = maxHp;
+        animSpeed = 1.0f;
+        isDamage = false;
+        isFire = false;
+        elapsed.run = 0.0f;
+        elapsed.invincivle = 0.0f;
     }
 
     private void OnTriggerEnter(Collider other)
