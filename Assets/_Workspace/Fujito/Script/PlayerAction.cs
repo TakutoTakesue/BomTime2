@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     CameraAction act_Camera;
+    M_StateAction act_MState;
+    Play_UI_Managet mng_PlayUI;
     struct InputData
     {
         public float x, z;  //移動入力の値
@@ -13,68 +15,91 @@ public class PlayerAction : MonoBehaviour
 
     struct Elapsed  //それぞれの経過時間変数
     {
-        public float fire;  //発射の間隔用
+        //public float fire;  //発射の間隔用
         public float run;   //歩き→走りを滑らかにする用 (0~1)
         public float invincivle;    //被弾時の点滅用
         public float test;
     }
     Elapsed elapsed;
 
+    enum FireMode
+    {
+        single,
+        diffusion,
+    }
+    [SerializeField] FireMode fireMode;
 
     [Header("各オブジェクト")]
     [SerializeField, Tooltip("弾のPrefab")] GameObject obj_Bullet;
-    [SerializeField, Tooltip("弾の発射位置")] Transform tForm_Shoot;
+    [SerializeField, Tooltip("弾の発射位置")] Transform[] tForm_Shoot;
     [SerializeField, Tooltip("カメラの親Empty")] GameObject cameraMaster;
+    [SerializeField, Tooltip("発射Posの親Empty")] GameObject shootPosManager;
 
     [Header("PlayerのParamater")]
     [SerializeField, Tooltip("最大体力")] int maxHp;
     [SerializeField, Tooltip("歩き速度")] float runSpeed;
     [SerializeField, Tooltip("走り速度")] float walkSpeed;
     [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
-    [SerializeField, Tooltip("銃発射間隔(F)")] int interval;
+    //[SerializeField, Tooltip("銃発射間隔(F)")] int interval;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
     [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
 
     [SerializeField] bool isController;
+    [SerializeField] Vector3 fireOffset;
+    [SerializeField] Vector3 shootPosOffset;
 
     //Playerの内部データ
-    float animSpeed;
-    int myHp;
-    bool isDamage;
-    Vector3 dir;
-    GameObject obj_Copy;
+    float animSpeed;        //走るときのAnimationスピード
+    int myHp;               //現在のHP
+    bool isDamage;          //被弾中か
+    int cntBean;
 
-    Material myMaterial;
+    Vector3 dir;            //進む方向ベクトル
+    GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
 
-    bool isFire;
+
+    bool isFire;            //true: 発砲中
     bool test;
+
+
+    //Component
+    Rigidbody myRb;
+    Animator myAnim;
+    SkinnedMeshRenderer[] mySM_Renderer;
+    Material myMaterial;
 
     public bool IsFire
     {
         get { return isFire; }
     }
 
-    //Component
-    Rigidbody myRb;
-    Animator myAnim;
-    SkinnedMeshRenderer[] mySM_Renderer;
-
     // Start is called before the first frame update
     void Start()
     {
         obj_Copy = Instantiate(gameObject);
-        obj_Copy.SetActive(false);
+        obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
 
         act_Camera = cameraMaster.GetComponent<CameraAction>();
+        act_MState = GetComponent<M_StateAction>();
+
         myRb = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
         mySM_Renderer = GetComponentsInChildren<SkinnedMeshRenderer>();
         myMaterial = obj_Copy.GetComponentInChildren<SkinnedMeshRenderer>().material;
-        Debug.Log(mySM_Renderer.Length);
-        test = true;
+    }
+
+    private void Ready()
+    {
+        myHp = maxHp;
+        cntBean = 0;
+        animSpeed = 1.0f;
+        isDamage = false;
+        isFire = false;
+        elapsed.run = 0.0f;
+        elapsed.invincivle = 0.0f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -88,7 +113,23 @@ public class PlayerAction : MonoBehaviour
 
     public void Fire()
     {
-        Instantiate(obj_Bullet, tForm_Shoot.position, gameObject.transform.rotation);
+        switch(fireMode)
+        {
+            case FireMode.single:
+                GameObject bullet_0 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
+                bullet_0.transform.LookAt((tForm_Shoot[0].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[0].position);
+                break;
+            case FireMode.diffusion:
+                for(int i = 0;i < tForm_Shoot.Length;i++)
+                {
+                    GameObject bullet_1 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
+                    bullet_1.transform.LookAt((tForm_Shoot[i].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[i].position);
+
+                    //Vector3 rot_Bullet = new Vector3(0, bullet_1.transform.eulerAngles.y, bullet_1.transform.eulerAngles.z);
+                    //bullet_1.transform.eulerAngles = rot_Bullet;
+                }
+                break;
+        }
     }
 
     void FlashTest()
@@ -110,6 +151,9 @@ public class PlayerAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        shootPosManager.transform.position = gameObject.transform.position;
+
+        Debug.Log(shootPosManager.transform.position);
         inputData.x = 0;
         inputData.z = 0;
 

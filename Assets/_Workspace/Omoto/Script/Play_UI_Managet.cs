@@ -12,7 +12,7 @@ public class Play_UI_Managet : MonoBehaviour
     void Start()
     {
         Init();
-        Time_UI(3.0f);
+        Time_UI(0.0f);
     }
 
     // 初期化
