@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(M_StateAction))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
+public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, AttackCaller
 {
 
     [SerializeField, Header("通常状態のスピード")]
@@ -31,6 +31,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     float lostTagertTime = 5;
     [SerializeField, Header("敵を攻撃したときのインターバル")]
     float attackInterval = 1;
+    [SerializeField, Header("死亡時何秒で消えるか")]
+    float deathInterval = 1.5f;
     [SerializeField, Header("Rayに当たるレイヤーの選択")]
     LayerMask[] layerMask;
     // 経過時間をまとめたもの
@@ -51,6 +53,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     int mask = 0;   // 衝突するマスク
     bool dashFlg = false;   // 敵がダッシュしているかどうか
     bool overlookingFlg = false;   // 敵がダッシュしているかどうか
+    bool deathFlg = false;  // 死亡しているか
 
 
     // 自身の状態
@@ -108,7 +111,33 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     // 死亡処理
     public void CallDead()
     {
-        Destroy(gameObject);
+        if (deathFlg)
+        {
+            return;
+        }
+        myAnim.SetTrigger("Die");
+        deathFlg = true;
+        StopOverlooking();
+        Destroy(gameObject, deathInterval);
+    }
+
+    // ダメージを受けた時の処理
+    public void CallDamage()
+    {
+        CallDiscover();
+    }
+
+    public void CallAttack()
+    {
+        if (deathFlg) {
+            return;
+        }
+        if (elapsed.attackTimeElapsed <= 0 && state == State.discover)
+        {
+            myNavi.enabled = false;
+            myAnim.SetTrigger("Attack");
+            elapsed.attackTimeElapsed = attackInterval;
+        }
     }
 
     // 敵を発見したとき
@@ -117,6 +146,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         myNavi.enabled = true;
         myNavi.speed = dashSpeed;
         dashFlg = true;
+        targetPos = player.transform.position;
         StopOverlooking();
         state = State.discover; // 敵を発見
     }
@@ -164,22 +194,22 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 
     private void OnCollisionEnter(Collision collision)
     {
-       
-        if (collision.gameObject.tag == "Player") {
-            if (elapsed.attackTimeElapsed <= 0 && state == State.discover)
-            {
-                myAnim.SetTrigger("Attack");
-                elapsed.attackTimeElapsed = attackInterval;
-            }
-        }
+
     }
 
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            CallDead();
+        }
+        if (deathFlg) {
+            return;
+        }
         if (elapsed.attackTimeElapsed > 0)
         {
             elapsed.attackTimeElapsed -= Time.deltaTime;
+            myNavi.enabled = true;
             return;
         }
         if (myNavi.enabled)
@@ -215,7 +245,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 
                 case State.discover:
                     Ray targetRay = new Ray(transform.position + Vector3.up / 2, player.transform.position - transform.position);
-                    myNavi.SetDestination(player.transform.position); //ナビメッシュが有効なら目的地へ
+                    //myNavi.SetDestination(player.transform.position); //ナビメッシュが有効なら目的地へ
                     RaycastHit hit;
                     if (Physics.Raycast(targetRay, out hit, 10, mask))
                     {

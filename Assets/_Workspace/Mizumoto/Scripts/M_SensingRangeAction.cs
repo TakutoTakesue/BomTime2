@@ -42,7 +42,6 @@ public class M_SensingRangeAction : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    Debug.Log("Discover");
                     Discover();    // 敵の発見を通達
                 }
             }
