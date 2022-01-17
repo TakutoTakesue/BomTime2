@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     CameraAction act_Camera;
+    M_StateAction act_MState;
+    Play_UI_Managet mng_PlayUI;
     struct InputData
     {
         public float x, z;  //移動入力の値
@@ -20,11 +22,21 @@ public class PlayerAction : MonoBehaviour
     }
     Elapsed elapsed;
 
+    enum FireMode
+    {
+        single,
+        diffusion,
+    }
+    [Header("Diffusion: 拡散撃ち")]
+    [Header("Single: 単発撃ち")]
+    [Header("発射のMode")]
+    [SerializeField] FireMode fireMode;
 
     [Header("各オブジェクト")]
     [SerializeField, Tooltip("弾のPrefab")] GameObject obj_Bullet;
-    [SerializeField, Tooltip("弾の発射位置")] Transform tForm_Shoot;
+    [SerializeField, Tooltip("弾が向かうTransform")] Transform[] tForm_ToShoot;
     [SerializeField, Tooltip("カメラの親Empty")] GameObject cameraMaster;
+    [SerializeField, Tooltip("弾の発射Position")] GameObject shootPos;
 
     [Header("PlayerのParamater")]
     [SerializeField, Tooltip("最大体力")] int maxHp;
@@ -35,7 +47,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
-    [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
+    [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone; 
 
     [SerializeField] bool isController;
 
@@ -43,6 +55,8 @@ public class PlayerAction : MonoBehaviour
     float animSpeed;        //走るときのAnimationスピード
     int myHp;               //現在のHP
     bool isDamage;          //被弾中か
+    int cntBean;
+    Vector3 fireOffset = new Vector3(0.227f, 1.541f, 0);
 
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
@@ -71,6 +85,8 @@ public class PlayerAction : MonoBehaviour
         animSpeed = 0.0f;
 
         act_Camera = cameraMaster.GetComponent<CameraAction>();
+        act_MState = GetComponent<M_StateAction>();
+
         myRb = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
         mySM_Renderer = GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -80,6 +96,7 @@ public class PlayerAction : MonoBehaviour
     private void Ready()
     {
         myHp = maxHp;
+        cntBean = 0;
         animSpeed = 1.0f;
         isDamage = false;
         isFire = false;
@@ -98,7 +115,20 @@ public class PlayerAction : MonoBehaviour
 
     public void Fire()
     {
-        Instantiate(obj_Bullet, tForm_Shoot.position, gameObject.transform.rotation);
+        switch(fireMode)
+        {
+            case FireMode.single:
+                GameObject bullet_0 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                bullet_0.transform.LookAt(tForm_ToShoot[0].position);
+                break;
+            case FireMode.diffusion:
+                for(int i = 0;i < tForm_ToShoot.Length;i++)
+                {
+                    GameObject bullet_1 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                    bullet_1.transform.LookAt(tForm_ToShoot[i].position);
+                }
+                break;
+        }
     }
 
     void FlashTest()

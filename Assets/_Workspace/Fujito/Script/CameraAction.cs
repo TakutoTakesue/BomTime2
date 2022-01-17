@@ -24,10 +24,10 @@ public class CameraAction : MonoBehaviour
     [SerializeField] GameObject myCamera;   //カメラ
 
     [Header("カメラ詳細情報")]
-    [SerializeField, Tooltip("仰角制限")] float maxPitch;    //仰角制限
-    [SerializeField, Tooltip("俯角制限")] float minPitch;    //俯角制限
-    [SerializeField, Tooltip("感度")] Vector2 bias;          //カメラの感度
-    [SerializeField] Vector3 offset;
+    [SerializeField, Tooltip("仰角制限")] float maxPitch;   //仰角制限
+    [SerializeField, Tooltip("俯角制限")] float minPitch;   //俯角制限
+    [SerializeField, Tooltip("感度")] Vector2 bias;         //カメラの感度
+    [SerializeField] Vector3 offset;                        //rayの発射位置のオフセット
 
     float h;
     float v;
@@ -84,7 +84,7 @@ public class CameraAction : MonoBehaviour
             myCamera.transform.localPosition = camStartPos;
         }
         //壁判定
-        if (Physics.Linecast(gameObject.transform.position, myCamera.transform.position, out hit))
+        if (Physics.Linecast(gameObject.transform.position + offset, myCamera.transform.position, out hit))
         {
             //カメラを当たった場所に。
             myCamera.transform.localPosition = gameObject.transform.InverseTransformPoint(hit.point);

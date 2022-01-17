@@ -8,6 +8,8 @@ public interface StateCaller : IEventSystemHandler
     // イベントを呼び出すメソッド
     // 死亡通知用関数
     void CallDead();
+    // ダメージ通知
+    void CallDamage();
 }
 
 
@@ -41,12 +43,21 @@ public class M_StateAction : MonoBehaviour
             // 死んだ場合は死亡処理
             Dead();
         }
+        else {
+            ExecuteEvents.Execute<StateCaller>(
+                       target: gameObject,
+                       eventData: null,
+                       functor: CallMyDamage
+                       );
+        }
     }
     // 回復する処理
     public void Recovery(int recovery)
     {
         hp += Mathf.Clamp(recovery, 0, hpmax);
     }
+
+
 
     // 死んだ場合は自身に通達して後は自分に処理させる
     void Dead()
@@ -62,6 +73,12 @@ public class M_StateAction : MonoBehaviour
     {
         // 自分に対して死亡を通達
         inf.CallDead();
+    }
+
+    void CallMyDamage(StateCaller inf, BaseEventData eventData)
+    {
+        // 自分に対して死亡を通達
+        inf.CallDamage();
     }
     // Update is called once per frame
     void Update()
