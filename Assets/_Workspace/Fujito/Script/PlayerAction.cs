@@ -43,6 +43,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("歩き速度")] float runSpeed;
     [SerializeField, Tooltip("走り速度")] float walkSpeed;
     [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
+    [SerializeField, Tooltip("走り→歩き速度になるまでの時間(S)")] float toWalkSecond;
     //[SerializeField, Tooltip("銃発射間隔(F)")] int interval;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
@@ -60,7 +61,6 @@ public class PlayerAction : MonoBehaviour
 
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
-
 
     bool isFire;            //true: 発砲中
     bool test;
@@ -131,6 +131,11 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    public void SetMoveFlg(int value)
+    {
+        isFire = value == 0 ? false : true;
+    }
+
     void FlashTest()
     {
         test = !test;
@@ -188,17 +193,28 @@ public class PlayerAction : MonoBehaviour
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        if (Input.GetMouseButtonDown(0))    //発射
+        //if(!isFire)
+        //{
+        if (Input.GetMouseButton(0))    //発射
         {
             //発射の関数呼び出しはAnimaitonのEventでやってる
             isFire = true;
             myAnim.SetBool("Fire", true);
         }
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(1))
         {
-            isFire = false;
+            Debug.Log("change");
+            fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
+        }
+        //}
+        //else
+        //{
+        if (!Input.GetMouseButton(0))
+        {
+            //isFire = false;
             myAnim.SetBool("Fire", false);
         }
+        //}
     }
 
     private void FixedUpdate()
@@ -230,7 +246,7 @@ public class PlayerAction : MonoBehaviour
             }
             else
             {
-                elapsed.run -= Time.deltaTime / toRunSecond;
+                elapsed.run -= Time.deltaTime / toWalkSecond;
             }
 
             elapsed.run = Mathf.Clamp01(elapsed.run);

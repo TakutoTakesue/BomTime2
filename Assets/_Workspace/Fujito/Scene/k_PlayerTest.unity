@@ -178,7 +178,8 @@ MonoBehaviour:
   maxHp: 10
   runSpeed: 7
   walkSpeed: 5
-  toRunSecond: 2
+  toRunSecond: 1.5
+  toWalkSecond: 0.8
   invincivleTime: 0
   deadZone: 0.1
   isController: 0
@@ -893,6 +894,7 @@ MonoBehaviour:
   runSpeed: 10
   walkSpeed: 5
   toRunSecond: 0
+  toWalkSecond: 0
   invincivleTime: 0
   deadZone: 0.2
   isController: 0
