@@ -778,9 +778,29 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 5040680655836604533, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680655915818200, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680655961459687, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5040680656023942980, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
       propertyPath: m_LocalScale.y
       value: 10.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680657178591644, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5040680657344869781, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8462054117377047119, guid: 43d8507794574e14aa8dd707321e25d2, type: 3}
       propertyPath: m_RootOrder
