@@ -118,6 +118,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         myAnim.SetTrigger("Die");
         deathFlg = true;
         StopOverlooking();
+        var enemyManager = GameObject.FindGameObjectWithTag("EnemyManager");
         Destroy(gameObject, deathInterval);
     }
 
