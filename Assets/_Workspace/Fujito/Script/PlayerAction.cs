@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAction : MonoBehaviour
 {
@@ -44,25 +45,31 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("走り速度")] float walkSpeed;
     [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
     [SerializeField, Tooltip("走り→歩き速度になるまでの時間(S)")] float toWalkSecond;
-    //[SerializeField, Tooltip("銃発射間隔(F)")] int interval;
+    [SerializeField, Tooltip("スタミナが空になるまでの時間(S)")] float subtractionStamina;
+    [SerializeField, Tooltip("スタミナが満タンになる時間(S)")] float addStamina;
+    [SerializeField, Tooltip("ダッシュ時にスタミナの減る割合(%)")] int subtractionPersent;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
-    [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone; 
-
+    [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone;
+    [SerializeField, Tooltip("恵方巻の最大所持数")] int maxEhomaki;
     [SerializeField] bool isController;
+    [SerializeField, Tooltip("スタミナバー")] Image img_Stamina;
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
     int myHp;               //現在のHP
     bool isDamage;          //被弾中か
-    [SerializeField] int cntBullet;
+    int cntBullet;          //弾の所持数
+    int cntEhomaki;         //恵方巻の所持数
     Vector3 fireOffset = new Vector3(0.227f, 1.541f, 0);
+    float myStamina;
 
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
 
     bool isFire;            //true: 発砲中
+    bool isDash;
     bool test;
 
 
@@ -77,9 +84,21 @@ public class PlayerAction : MonoBehaviour
         get { return isFire; }
     }
 
+    public int GetEhomaki
+    {
+        get { return cntEhomaki; }
+    }
+
+    public int GetBulletCnt
+    {
+        get { return cntBullet; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        myStamina = 1;
+
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
@@ -96,6 +115,7 @@ public class PlayerAction : MonoBehaviour
     private void Ready()
     {
         myHp = maxHp;
+        myStamina = 1;
         cntBullet = 0;
         animSpeed = 1.0f;
         isDamage = false;
@@ -191,6 +211,21 @@ public class PlayerAction : MonoBehaviour
                 {
                     inputData.x += 1;
                 }
+
+                if(Input.GetKeyDown(KeyCode.LeftShift))
+                {
+                    if ((myStamina * 100) >= subtractionPersent)
+                    {
+                        Debug.Log("dash");
+                        myStamina -= subtractionPersent / 100;
+                        elapsed.run += Time.deltaTime / toRunSecond;
+                        isDash = true;
+                    }
+                }
+                else if(Input.GetKeyUp(KeyCode.LeftShift))
+                {
+                    isDash = false;
+                }
             }
         }
         else
@@ -244,15 +279,26 @@ public class PlayerAction : MonoBehaviour
         if (Mathf.Abs(inputData.x) > deadZone || Mathf.Abs(inputData.z) > deadZone)
         {
             transform.rotation = Quaternion.LookRotation(dir);
-            if(Input.GetKey(KeyCode.LeftShift))// || Input.GetButton("BtnA")
+
+            if(isDash)
             {
-                elapsed.run += Time.deltaTime / toRunSecond;
+                if (myStamina > 0.0f)
+                {
+                    elapsed.run += Time.deltaTime / toRunSecond;
+                    myStamina -= Time.deltaTime / subtractionStamina;
+                }
             }
             else
             {
                 elapsed.run -= Time.deltaTime / toWalkSecond;
             }
 
+            if(myStamina <= 0.0f)
+            {
+                isDash = false;
+            }
+
+            myStamina = Mathf.Clamp01(myStamina);
             elapsed.run = Mathf.Clamp01(elapsed.run);
             dir *= Mathf.Lerp(walkSpeed, runSpeed, elapsed.run);
 
@@ -273,6 +319,14 @@ public class PlayerAction : MonoBehaviour
             animSpeed = 1.0f;
             myAnim.SetFloat("Speed", 0);
         }
+
+        if (!isDash)
+        {
+            elapsed.run -= Time.deltaTime / toWalkSecond;
+        }
+
+        Debug.Log(myStamina);
+        img_Stamina.fillAmount = myStamina;
 
         dir.y = myRb.velocity.y;
         myRb.velocity = dir;
