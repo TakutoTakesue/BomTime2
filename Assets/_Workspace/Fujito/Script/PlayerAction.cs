@@ -56,7 +56,7 @@ public class PlayerAction : MonoBehaviour
     float animSpeed;        //走るときのAnimationスピード
     int myHp;               //現在のHP
     bool isDamage;          //被弾中か
-    int cntBean;
+    [SerializeField] int cntBullet;
     Vector3 fireOffset = new Vector3(0.227f, 1.541f, 0);
 
     Vector3 dir;            //進む方向ベクトル
@@ -71,7 +71,7 @@ public class PlayerAction : MonoBehaviour
     Animator myAnim;
     SkinnedMeshRenderer[] mySM_Renderer;
     Material myMaterial;
-
+    
     public bool IsFire
     {
         get { return isFire; }
@@ -96,7 +96,7 @@ public class PlayerAction : MonoBehaviour
     private void Ready()
     {
         myHp = maxHp;
-        cntBean = 0;
+        cntBullet = 0;
         animSpeed = 1.0f;
         isDamage = false;
         isFire = false;
@@ -115,19 +115,27 @@ public class PlayerAction : MonoBehaviour
 
     public void Fire()
     {
-        switch(fireMode)
+        if (cntBullet > 0)
         {
-            case FireMode.single:
-                GameObject bullet_0 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
-                bullet_0.transform.LookAt(tForm_ToShoot[0].position);
-                break;
-            case FireMode.diffusion:
-                for(int i = 0;i < tForm_ToShoot.Length;i++)
-                {
-                    GameObject bullet_1 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
-                    bullet_1.transform.LookAt(tForm_ToShoot[i].position);
-                }
-                break;
+            switch (fireMode)
+            {
+                case FireMode.single:
+                    GameObject bullet_0 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                    bullet_0.transform.LookAt(tForm_ToShoot[0].position);
+                    cntBullet--;
+                    break;
+                case FireMode.diffusion:
+                    if (cntBullet >= tForm_ToShoot.Length)
+                    {
+                        for (int i = 0; i < tForm_ToShoot.Length; i++)
+                        {
+                            GameObject bullet_1 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                            bullet_1.transform.LookAt(tForm_ToShoot[i].position);
+                            cntBullet--;
+                        }
+                    }
+                    break;
+            }
         }
     }
 
@@ -201,20 +209,16 @@ public class PlayerAction : MonoBehaviour
             isFire = true;
             myAnim.SetBool("Fire", true);
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            Debug.Log("change");
-            fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
-        }
-        //}
-        //else
-        //{
-        if (!Input.GetMouseButton(0))
+        if (Input.GetMouseButtonUp(0))
         {
             //isFire = false;
             myAnim.SetBool("Fire", false);
         }
-        //}
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
+        }
     }
 
     private void FixedUpdate()
@@ -272,5 +276,6 @@ public class PlayerAction : MonoBehaviour
 
         dir.y = myRb.velocity.y;
         myRb.velocity = dir;
+        
     }
 }

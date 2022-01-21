@@ -192,9 +192,10 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         yield break;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-
+    protected void OnTrrgerEnter(Collider other) {
+        if (other.tag == "Bullet") {
+            Destroy(other);
+        }
     }
 
     // Update is called once per frame
