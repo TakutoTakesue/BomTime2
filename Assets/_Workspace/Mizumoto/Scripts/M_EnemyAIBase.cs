@@ -119,6 +119,20 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         deathFlg = true;
         StopOverlooking();
         var enemyManager = GameObject.FindGameObjectWithTag("EnemyManager");
+        if (enemyManager)
+        {
+            var script = enemyManager.GetComponent<m_EnemyManager>();
+            if (script)
+            {
+                script.EnemyDead();
+            }
+            else {
+                Debug.LogWarning("EnemyManagerがスクリプトを持っていません");
+            }
+        }
+        else {
+            Debug.LogWarning("EnemyManagerが見つかりません");
+        }
         Destroy(gameObject, deathInterval);
     }
 
