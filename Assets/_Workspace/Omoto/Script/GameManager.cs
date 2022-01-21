@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     Play_UI_Managet P_UI_MGR;
 
-    float Elapsed = 60.0f;
+    float Elapsed = 100.0f;
 
     // Start is called before the first frame update
     void Start()
