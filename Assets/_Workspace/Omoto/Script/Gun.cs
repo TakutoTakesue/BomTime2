@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour
     public float interval = 0.5f; //弾の射出間隔
     //public Text txtBullet_cnt;
 
-    int Bullet_cnt; // 弾の残り数
+    int Bullet_cnt = 0; // 弾の残り数
 
     public GameObject Bean_Bullet; //発射用弾
     GameObject B;   // 発射用を生成
@@ -28,7 +28,7 @@ public class Gun : MonoBehaviour
         UI_MGR = GameObject.FindGameObjectWithTag("GameController");
         P_UI_MGR = UI_MGR.GetComponent<Play_UI_Managet>();
 
-        Bullet_cnt = 5;
+        //Bullet_cnt = 5;
     }
 
     IEnumerator Shot()
