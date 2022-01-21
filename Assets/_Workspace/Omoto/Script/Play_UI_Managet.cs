@@ -31,7 +31,7 @@ public class Play_UI_Managet : MonoBehaviour
     // 残り時間表示
     public void Time_UI(float TIME)
     {
-        txtTime.text = "Time:" + TIME.ToString("f3")+"s";
+        txtTime.text = "Time:" + TIME.ToString().PadLeft(3, '0');
     }
 
     // Update is called once per frame
