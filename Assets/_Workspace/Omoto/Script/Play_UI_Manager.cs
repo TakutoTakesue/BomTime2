@@ -86,8 +86,7 @@ public class Play_UI_Manager : MonoBehaviour
         PlayerHP_Bar(act_MState.HP, act_MState.HPMax);
         Time_UI(ManaerScript.Elapsed);
 
-        // Player側未更新のため、コメントアウト中
-        //Bullet_UI(act_Player.GetBulletCnt);
-        //HealItem_UI(act_Player.GetEhomaki);
+        Bullet_UI(act_Player.GetBulletCnt);
+        HealItem_UI(act_Player.GetEhomaki);
     }
 }
