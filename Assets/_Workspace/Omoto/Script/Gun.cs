@@ -9,14 +9,10 @@ public class Gun : MonoBehaviour
     public float interval = 0.5f; //弾の射出間隔
     //public Text txtBullet_cnt;
 
-    int Bullet_cnt = 0; // 弾の残り数
+   int Bullet_cnt = 0; // 弾の残り数
 
     public GameObject Bean_Bullet; //発射用弾
     GameObject B;   // 発射用を生成
-
-    GameObject UI_MGR;
-    Play_UI_Managet P_UI_MGR;
-
     bool isTrigger = false; //　銃が発射されているか,打てるのか
 
     // Start is called before the first frame update
@@ -25,10 +21,6 @@ public class Gun : MonoBehaviour
         // 銃の発射待機
         StartCoroutine("Shot");
 
-        UI_MGR = GameObject.FindGameObjectWithTag("GameController");
-        P_UI_MGR = UI_MGR.GetComponent<Play_UI_Managet>();
-
-        //Bullet_cnt = 5;
     }
 
     IEnumerator Shot()
@@ -71,8 +63,6 @@ public class Gun : MonoBehaviour
         {
             isTrigger = false;
         }
-
-        P_UI_MGR.Bullet_UI(Bullet_cnt);
 
     }
 }
