@@ -192,9 +192,20 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         yield break;
     }
 
-    protected void OnTrrgerEnter(Collider other) {
+    protected void OnTriggerEnter(Collider other) {
         if (other.tag == "Bullet") {
-            Destroy(other);
+            Destroy(other.gameObject);
+
+            var bulletScript = other.GetComponent<BulletAction>();
+            if (bulletScript)
+            {
+                Debug.Log("ダメージを受けた");
+                enemyState.OnDamage(bulletScript.GetPower);
+            }
+            else {
+                Debug.LogWarning("BulletがScriptを持っていません");
+            }
+
         }
     }
 
