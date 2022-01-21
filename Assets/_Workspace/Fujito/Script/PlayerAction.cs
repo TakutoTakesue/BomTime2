@@ -27,38 +27,40 @@ public class PlayerAction : MonoBehaviour
         single,
         diffusion,
     }
+    [Header("Diffusion: 拡散撃ち")]
+    [Header("Single: 単発撃ち")]
+    [Header("発射のMode")]
     [SerializeField] FireMode fireMode;
 
     [Header("各オブジェクト")]
     [SerializeField, Tooltip("弾のPrefab")] GameObject obj_Bullet;
-    [SerializeField, Tooltip("弾の発射位置")] Transform[] tForm_Shoot;
+    [SerializeField, Tooltip("弾が向かうTransform")] Transform[] tForm_ToShoot;
     [SerializeField, Tooltip("カメラの親Empty")] GameObject cameraMaster;
-    [SerializeField, Tooltip("発射Posの親Empty")] GameObject shootPosManager;
+    [SerializeField, Tooltip("弾の発射Position")] GameObject shootPos;
 
     [Header("PlayerのParamater")]
     [SerializeField, Tooltip("最大体力")] int maxHp;
     [SerializeField, Tooltip("歩き速度")] float runSpeed;
     [SerializeField, Tooltip("走り速度")] float walkSpeed;
     [SerializeField, Tooltip("歩き→走り速度になるまでの時間(S)")] float toRunSecond;
+    [SerializeField, Tooltip("走り→歩き速度になるまでの時間(S)")] float toWalkSecond;
     //[SerializeField, Tooltip("銃発射間隔(F)")] int interval;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
-    [SerializeField, Tooltip("デッドゾーン")] float deadZone; 
+    [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone; 
 
     [SerializeField] bool isController;
-    [SerializeField] Vector3 fireOffset;
-    [SerializeField] Vector3 shootPosOffset;
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
     int myHp;               //現在のHP
     bool isDamage;          //被弾中か
     int cntBean;
+    Vector3 fireOffset = new Vector3(0.227f, 1.541f, 0);
 
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
-
 
     bool isFire;            //true: 発砲中
     bool test;
@@ -116,20 +118,22 @@ public class PlayerAction : MonoBehaviour
         switch(fireMode)
         {
             case FireMode.single:
-                GameObject bullet_0 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
-                bullet_0.transform.LookAt((tForm_Shoot[0].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[0].position);
+                GameObject bullet_0 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                bullet_0.transform.LookAt(tForm_ToShoot[0].position);
                 break;
             case FireMode.diffusion:
-                for(int i = 0;i < tForm_Shoot.Length;i++)
+                for(int i = 0;i < tForm_ToShoot.Length;i++)
                 {
-                    GameObject bullet_1 = Instantiate(obj_Bullet, tForm_Shoot[0].position, gameObject.transform.rotation);
-                    bullet_1.transform.LookAt((tForm_Shoot[i].position - (gameObject.transform.position + fireOffset)).normalized + tForm_Shoot[i].position);
-
-                    //Vector3 rot_Bullet = new Vector3(0, bullet_1.transform.eulerAngles.y, bullet_1.transform.eulerAngles.z);
-                    //bullet_1.transform.eulerAngles = rot_Bullet;
+                    GameObject bullet_1 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
+                    bullet_1.transform.LookAt(tForm_ToShoot[i].position);
                 }
                 break;
         }
+    }
+
+    public void SetMoveFlg(int value)
+    {
+        isFire = value == 0 ? false : true;
     }
 
     void FlashTest()
@@ -151,9 +155,6 @@ public class PlayerAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        shootPosManager.transform.position = gameObject.transform.position;
-
-        Debug.Log(shootPosManager.transform.position);
         inputData.x = 0;
         inputData.z = 0;
 
@@ -192,17 +193,28 @@ public class PlayerAction : MonoBehaviour
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        if (Input.GetMouseButtonDown(0))    //発射
+        //if(!isFire)
+        //{
+        if (Input.GetMouseButton(0))    //発射
         {
             //発射の関数呼び出しはAnimaitonのEventでやってる
             isFire = true;
             myAnim.SetBool("Fire", true);
         }
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(1))
         {
-            isFire = false;
+            Debug.Log("change");
+            fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
+        }
+        //}
+        //else
+        //{
+        if (!Input.GetMouseButton(0))
+        {
+            //isFire = false;
             myAnim.SetBool("Fire", false);
         }
+        //}
     }
 
     private void FixedUpdate()
@@ -234,7 +246,7 @@ public class PlayerAction : MonoBehaviour
             }
             else
             {
-                elapsed.run -= Time.deltaTime / toRunSecond;
+                elapsed.run -= Time.deltaTime / toWalkSecond;
             }
 
             elapsed.run = Mathf.Clamp01(elapsed.run);
