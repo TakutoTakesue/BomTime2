@@ -5,11 +5,6 @@ using UnityEngine.UI;
 
 /**
  * UI表示関連
- * アイテムのカウントを保持している辺巣を入れてもらえれば表示されます。
- * publicになってるので引っ張ってUpdateにおいといてもらえたら表示されます
- * 
- * Timeはゲームマネージャーに
- * 他のアイテムカウントはプレイヤーに
  */
 public class Play_UI_Managet : MonoBehaviour
 {
@@ -17,37 +12,30 @@ public class Play_UI_Managet : MonoBehaviour
     [SerializeField] Text txtTime;
 
     [SerializeField] GameObject HealImage;
+    [SerializeField] GameObject player;
 
     [SerializeField] Slider slider;
 
-    [SerializeField] private PlayerAction PlayerScript;
     [SerializeField] private GameManager ManaerScript;
-    [SerializeField] private Gun GunScript;
+ 
 
-    int Bullet_cnt;
-    float TIME;
-    int ItemCnt;
-    int PlayerHP;
-    int MaxHP;
+    M_StateAction act_MState;
+    PlayerAction act_Player;
 
     // Start is called before the first frame update
     void Start()
     {
         Init();
-        Time_UI();
+        Time_UI(0.0f);
         HealImage.SetActive(false);
         //Sliderを満タンにする。
         slider.value = 1;
 
-        GameObject player = GameObject.FindWithTag("Player");
-        PlayerScript = player.GetComponent<PlayerAction>();
-
         GameObject gamemanager = GameObject.FindWithTag("GameController");
         ManaerScript = gamemanager.GetComponent<GameManager>();
 
-        GameObject gun = GameObject.FindWithTag("Gun");
-        GunScript = gun.GetComponent<Gun>();
-
+        act_MState = player.GetComponent<M_StateAction>();
+        act_Player = player.GetComponent<PlayerAction>();
     }
 
     // 初期化
@@ -57,19 +45,19 @@ public class Play_UI_Managet : MonoBehaviour
     }
 
     // 弾の残り弾数表示
-    public void Bullet_UI()
+    public void Bullet_UI(int Bullet_cnt)
     {
         txtBullet_cnt.text = ":"+ Bullet_cnt.ToString().PadLeft(3, '0');
     }
 
     // 残り時間表示
-    public void Time_UI()
+    public void Time_UI(float TIME)
     {
         txtTime.text = "TIME:" + TIME.ToString("f0").PadLeft(3, '0');
     }
 
     //恵方巻の表示非表示 所持数0以下なら非表示
-    public void HealItem_UI()
+    public void HealItem_UI(int ItemCnt)
     {
         if (ItemCnt <= 0) 
         {
@@ -82,7 +70,7 @@ public class Play_UI_Managet : MonoBehaviour
     }
 
     //プレイヤーのHPバーの増減
-    public void PlayerHP_Bar()
+    public void PlayerHP_Bar(int PlayerHP, int MaxHP)
     {
         slider.value = (float)PlayerHP / (float)MaxHP;
     }
@@ -91,10 +79,12 @@ public class Play_UI_Managet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TIME = ManaerScript.Elapsed;
 
+        PlayerHP_Bar(act_MState.HP, act_MState.HPMax);
+        Time_UI(ManaerScript.Elapsed);
 
-
-        Time_UI();
+        // Player側未更新のため、コメントアウト中
+        //Bullet_UI(act_Player.GetBulletCnt);
+        //HealItem_UI(act_Player.GetEhomaki);
     }
 }
