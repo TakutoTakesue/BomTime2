@@ -224,6 +224,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         }
     }
 
+
+
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {

@@ -21,7 +21,7 @@ public class M_AttackSensingAction : MonoBehaviour
         
     }
 
-    void Attack()
+    public void Attack()
     {
         ExecuteEvents.Execute<AttackCaller>(
                         target: enemy,
