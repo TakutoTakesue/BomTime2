@@ -181,8 +181,8 @@ MonoBehaviour:
   toRunSecond: 1.5
   toWalkSecond: 0.8
   subtractionStamina: 5
-  addStamina: 4
-  subtractionPersent: 50
+  addStamina: 10
+  subtractionPersent: 5
   invincivleTime: 0
   deadZone: 0.1
   maxEhomaki: 0
