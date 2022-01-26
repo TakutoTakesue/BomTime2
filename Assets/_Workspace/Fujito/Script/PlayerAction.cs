@@ -102,7 +102,7 @@ public class PlayerAction : MonoBehaviour
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
-
+        
         act_Camera = cameraMaster.GetComponent<CameraAction>();
         act_MState = GetComponent<M_StateAction>();
 
