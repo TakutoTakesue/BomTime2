@@ -47,7 +47,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("走り→歩き速度になるまでの時間(S)")] float toWalkSecond;
     [SerializeField, Tooltip("スタミナが空になるまでの時間(S)")] float subtractionStamina;
     [SerializeField, Tooltip("スタミナが満タンになる時間(S)")] float addStamina;
-    [SerializeField, Tooltip("ダッシュ時にスタミナの減る割合(%)")] int subtractionPersent;
+    [SerializeField, Tooltip("ダッシュ時にスタミナの減る割合(%)")] float subtractionPersent;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
 
     [Header("Game設計データ")]
@@ -102,7 +102,7 @@ public class PlayerAction : MonoBehaviour
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
-
+        
         act_Camera = cameraMaster.GetComponent<CameraAction>();
         act_MState = GetComponent<M_StateAction>();
 
@@ -214,12 +214,13 @@ public class PlayerAction : MonoBehaviour
 
                 if(Input.GetKeyDown(KeyCode.LeftShift))
                 {
+                    Debug.Log(myStamina);
                     if ((myStamina * 100) >= subtractionPersent)
                     {
-                        Debug.Log("dash");
-                        myStamina -= subtractionPersent / 100;
-                        elapsed.run += Time.deltaTime / toRunSecond;
+                        myStamina -= subtractionPersent / 100.0f;
+                        //elapsed.run += Time.deltaTime / toRunSecond;
                         isDash = true;
+                        Debug.Log(myStamina);
                     }
                 }
                 else if(Input.GetKeyUp(KeyCode.LeftShift))
@@ -290,6 +291,7 @@ public class PlayerAction : MonoBehaviour
             }
             else
             {
+                myStamina += Time.deltaTime / addStamina;
                 elapsed.run -= Time.deltaTime / toWalkSecond;
             }
 
@@ -315,17 +317,17 @@ public class PlayerAction : MonoBehaviour
         }
         else
         {
+            if (!isDash)
+            {
+                myStamina += Time.deltaTime / addStamina;
+            }
+
             elapsed.run = 0.0f;
             animSpeed = 1.0f;
             myAnim.SetFloat("Speed", 0);
         }
 
-        if (!isDash)
-        {
-            elapsed.run -= Time.deltaTime / toWalkSecond;
-        }
 
-        Debug.Log(myStamina);
         img_Stamina.fillAmount = myStamina;
 
         dir.y = myRb.velocity.y;

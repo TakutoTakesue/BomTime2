@@ -6,16 +6,19 @@ using UnityEngine.UI;
 /**
  * UI表示関連
  */
-public class Play_UI_Managet : MonoBehaviour
+public class Play_UI_Manager : MonoBehaviour
 {
     [SerializeField] Text txtBullet_cnt;
     [SerializeField] Text txtTime;
 
     [SerializeField] GameObject HealImage;
+    
+    //プレイヤーのオブジェクト
     [SerializeField] GameObject player;
 
     [SerializeField] Slider slider;
 
+    //　ゲームマネージャーの取得
     [SerializeField] private GameManager ManaerScript;
  
 
@@ -83,8 +86,7 @@ public class Play_UI_Managet : MonoBehaviour
         PlayerHP_Bar(act_MState.HP, act_MState.HPMax);
         Time_UI(ManaerScript.Elapsed);
 
-        // Player側未更新のため、コメントアウト中
-        //Bullet_UI(act_Player.GetBulletCnt);
-        //HealItem_UI(act_Player.GetEhomaki);
+        Bullet_UI(act_Player.GetBulletCnt);
+        HealItem_UI(act_Player.GetEhomaki);
     }
 }
