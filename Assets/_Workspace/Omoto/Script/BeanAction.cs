@@ -23,10 +23,7 @@ public class BeanAction : MonoBehaviour
     {
         // プレイヤーと触れたとき　(ゲットされたら)
         if (other.gameObject.tag == "Player")
-        {
-            // 銃の弾の数を増やす
-            Gun.SendMessage("Bullet_Add",SendMessageOptions.DontRequireReceiver);
-
+        { 
             // 自分は消える
             Destroy(gameObject);
         }
