@@ -133,7 +133,7 @@ public class PlayerAction : MonoBehaviour
     {
         if(other.gameObject.tag == "Bean")
         {
-            cntBullet + plusBulletNum;
+            cntBullet += plusBulletNum;
         }
 
         if(other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
