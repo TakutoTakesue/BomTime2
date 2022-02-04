@@ -10,9 +10,8 @@ public class ItemMaker : MonoBehaviour
     // 生成をストップするか
     public bool MakeStop = false;
 
-    // マップの広さ
-    public float Map_x = 50.0f;
-    public float Map_z = 50.0f;
+    public GameObject floor;
+    MeshCollider floorCollider;
 
     // 回復アイテムの確率
     public float Healitems_probability = 0.1f;
@@ -20,13 +19,21 @@ public class ItemMaker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //コイン生成処理を起動
+        floorCollider = floor.GetComponent<MeshCollider>();
+
+        //生成処理を起動
         StartCoroutine("BeanMake");
+
     }
 
     //コイン生成処理
     IEnumerator BeanMake()
     {
+        float Mapmin_x = floorCollider.bounds.min.x;
+        float Mapmax_x = floorCollider.bounds.max.x;
+        float Mapmin_z = floorCollider.bounds.min.z;
+        float Mapmax_z = floorCollider.bounds.max.z;
+
         while (true)
         {
             if (!MakeStop)
@@ -35,8 +42,8 @@ public class ItemMaker : MonoBehaviour
                 yield return new WaitForSeconds(Random.Range(1.0f,1.5f));
 
                 // マップ 0～指定した広さまでの範囲にランダムに生成 高さyは固定
-                float RanX = Random.Range(0,Map_x);
-                float RanZ = Random.Range(0,Map_z);
+                float RanX = Random.Range(Mapmin_x, Mapmax_x);
+                float RanZ = Random.Range(Mapmin_z, Mapmax_z);
 
                 //生成位置決定
                 Vector3 pos = new Vector3(RanX, 0.5f, RanZ);
