@@ -80,6 +80,8 @@ public class PlayerAction : MonoBehaviour
     Animator myAnim;
     SkinnedMeshRenderer[] mySM_Renderer;
     Material myMaterial;
+
+    BoxCollider floorColider;
     
     public bool IsFire
     {
