@@ -18,9 +18,9 @@ public class GameManager : MonoBehaviour
     }
 
     // ステージ数.
-    enum StageNum
+    public enum StageNum
     {
-        stage1=0
+        stage1
     }
 
     Scene scene;
@@ -33,25 +33,38 @@ public class GameManager : MonoBehaviour
         stage = StageNum.stage1;
     }
 
+    // プレイスタート処理.
+    void PlayStater()
+    {
+        Elapsed = 0.0f;
+    }
+
+    // ゲーム
+    void GameEnd()
+    {
+
+    }
     // Update is called once per frame
     void Update()
     {
- 
-        switch(scene)
+       
+        switch (scene)
         {
             case Scene.Title:
 
-                //if (Input.GetButtonDown("space"))
-                //{
-                //    SceneManager.LoadScene("Select");
-                //}
+                if(Input.GetButtonDown("BtnA"))
+                {
+                    SceneManager.LoadScene("Select");
+                }
 
                 break;
 
+                // ステージ選択.
             case Scene.Select:
+                Elapsed = 3.0f;
 
-
-
+                
+                
                 break;
 
             case Scene.Play:
@@ -59,6 +72,13 @@ public class GameManager : MonoBehaviour
 
 
 
+                break;
+
+            case Scene.Ranking:
+                if (Input.GetButtonDown("BtnA"))
+                {
+                    SceneManager.LoadScene("Title");
+                }
                 break;
         }
 

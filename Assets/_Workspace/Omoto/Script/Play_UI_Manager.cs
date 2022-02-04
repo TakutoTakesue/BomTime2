@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /**
- * UI表示関連
+ * UI表示関連 プレイヤーとゲームマネージャーの取得が必要です.
  */
 public class Play_UI_Manager : MonoBehaviour
 {
