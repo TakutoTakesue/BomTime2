@@ -11,7 +11,7 @@ public class ItemMaker : MonoBehaviour
     public bool MakeStop = false;
 
     public GameObject floor;
-    BoxCollider floorCollider;
+    MeshCollider floorCollider;
 
     // 回復アイテムの確率
     public float Healitems_probability = 0.1f;
@@ -19,7 +19,7 @@ public class ItemMaker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        floorCollider = GetComponent<BoxCollider>();
+        floorCollider = floor.GetComponent<MeshCollider>();
 
         //生成処理を起動
         StartCoroutine("BeanMake");
