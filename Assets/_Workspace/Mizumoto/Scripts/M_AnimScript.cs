@@ -20,7 +20,6 @@ public class M_AnimScript : MonoBehaviour
     public void BginAttackAnim()
     {
         attackFlg = true;
-        Debug.Log("孔隙");
         // 攻撃はじめ
         attackObj.SetActive(true);
     }
@@ -28,7 +27,6 @@ public class M_AnimScript : MonoBehaviour
     // 攻撃終了
     public void EndAttackAnim()
     {
-        Debug.Log("孔隙狩猟");
         attackFlg = false;
         // 攻撃終わり
         attackObj.SetActive(false);
