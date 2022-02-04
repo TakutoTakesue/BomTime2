@@ -503,22 +503,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.037037022
-        functionName: SetMoveFlg
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
-        messageOptions: 0
-      - time: 0.35751292
-        functionName: Fire
+      - time: 0.03703703
+        functionName: SetCanMoveFlgFalse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.93028325
-        functionName: SetMoveFlg
+      - time: 0.35751292
+        functionName: Fire
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
