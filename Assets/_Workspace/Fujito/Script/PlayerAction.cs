@@ -118,7 +118,7 @@ public class PlayerAction : MonoBehaviour
     {
         myHp = maxHp;
         myStamina = 1;
-        cntBullet = 0;
+        cntBullet = startBulletCnt;
         animSpeed = 1.0f;
         canMove = true;
         isDamage = false;
