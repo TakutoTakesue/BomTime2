@@ -54,7 +54,6 @@ public class PlayerAction : MonoBehaviour
     [Header("Game設計データ")]
     [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone;
     [SerializeField, Tooltip("恵方巻の最大所持数")] int maxEhomaki;
-    [SerializeField] bool isController;
     [SerializeField, Tooltip("スタミナバー")] Image img_Stamina;
 
     //Playerの内部データ
@@ -315,9 +314,12 @@ public class PlayerAction : MonoBehaviour
         }
 
 
-        img_Stamina.fillAmount = myStamina;
+        if(img_Stamina)
+        {
+            img_Stamina.fillAmount = myStamina;
+        }
 
-        if(!canMove)
+        if (!canMove)
         {
             dir = new Vector3(0.0f, 0.0f, 0.0f);
         }
