@@ -314,9 +314,12 @@ public class PlayerAction : MonoBehaviour
         }
 
 
-        img_Stamina.fillAmount = myStamina;
+        if(img_Stamina)
+        {
+            img_Stamina.fillAmount = myStamina;
+        }
 
-        if(!canMove)
+        if (!canMove)
         {
             dir = new Vector3(0.0f, 0.0f, 0.0f);
         }
