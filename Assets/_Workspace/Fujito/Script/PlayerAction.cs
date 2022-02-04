@@ -7,7 +7,7 @@ public class PlayerAction : MonoBehaviour
 {
     CameraAction act_Camera;
     M_StateAction act_MState;
-    Play_UI_Managet mng_PlayUI;
+    Play_UI_Manager mng_PlayUI;
     struct InputData
     {
         public float x, z;  //移動入力の値
@@ -49,12 +49,13 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("スタミナが満タンになる時間(S)")] float addStamina;
     [SerializeField, Tooltip("ダッシュ時にスタミナの減る割合(%)")] float subtractionPersent;
     [SerializeField, Tooltip("被弾時の無敵時間(S)")] float invincivleTime;
+    [SerializeField, Tooltip("弾の初期装弾数")] int startBulletCnt;
 
     [Header("Game設計データ")]
     [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone;
     [SerializeField, Tooltip("恵方巻の最大所持数")] int maxEhomaki;
-    [SerializeField] bool isController;
     [SerializeField, Tooltip("スタミナバー")] Image img_Stamina;
+    [SerializeField, Tooltip("豆を拾った時に増える弾数")] int plusBulletNum; 
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
@@ -68,6 +69,7 @@ public class PlayerAction : MonoBehaviour
     Vector3 dir;            //進む方向ベクトル
     GameObject obj_Copy;    //Materialをコピーする用のインスタンスオブジェクト
 
+    bool canMove;
     bool isFire;            //true: 発砲中
     bool isDash;
     bool test;
@@ -78,6 +80,8 @@ public class PlayerAction : MonoBehaviour
     Animator myAnim;
     SkinnedMeshRenderer[] mySM_Renderer;
     Material myMaterial;
+
+    BoxCollider floorColider;
     
     public bool IsFire
     {
@@ -97,7 +101,7 @@ public class PlayerAction : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myStamina = 1;
+        Ready();
 
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
@@ -116,8 +120,9 @@ public class PlayerAction : MonoBehaviour
     {
         myHp = maxHp;
         myStamina = 1;
-        cntBullet = 0;
+        cntBullet = startBulletCnt;
         animSpeed = 1.0f;
+        canMove = true;
         isDamage = false;
         isFire = false;
         elapsed.run = 0.0f;
@@ -126,6 +131,11 @@ public class PlayerAction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.tag == "Bean")
+        {
+            cntBullet += plusBulletNum;
+        }
+
         if(other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
         {
             myHp--;
@@ -158,6 +168,15 @@ public class PlayerAction : MonoBehaviour
             }
         }
     }
+    public void SetCanMoveFlgFalse()
+    {
+        canMove = false;
+    }
+
+    public void SetCanMoveFlgTrue()
+    {
+        canMove = true;
+    }
 
     public void SetMoveFlg(int value)
     {
@@ -179,54 +198,28 @@ public class PlayerAction : MonoBehaviour
     }
 
 
-
     // Update is called once per frame
     void Update()
     {
         inputData.x = 0;
         inputData.z = 0;
-
-        if (!isFire)
+        
+        if (canMove)
         {
-            if (isController)   //Pad
-            {
-                inputData.x = Input.GetAxis("Horizontal");
-                inputData.z = Input.GetAxis("Vertical");
-            }
-            else                //キーボード
-            {
-                if (Input.GetKey(KeyCode.W))
-                {
-                    inputData.z += 1;
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    inputData.z -= 1;
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    inputData.x -= 1;
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    inputData.x += 1;
-                }
+            inputData.x = Input.GetAxis("Horizontal");
+            inputData.z = Input.GetAxis("Vertical");
 
-                if(Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                if ((myStamina * 100) >= subtractionPersent)
                 {
-                    Debug.Log(myStamina);
-                    if ((myStamina * 100) >= subtractionPersent)
-                    {
-                        myStamina -= subtractionPersent / 100.0f;
-                        //elapsed.run += Time.deltaTime / toRunSecond;
-                        isDash = true;
-                        Debug.Log(myStamina);
-                    }
+                    myStamina -= subtractionPersent / 100.0f;
+                    isDash = true;
                 }
-                else if(Input.GetKeyUp(KeyCode.LeftShift))
-                {
-                    isDash = false;
-                }
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                isDash = false;
             }
         }
         else
@@ -237,17 +230,16 @@ public class PlayerAction : MonoBehaviour
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        //if(!isFire)
-        //{
         if (Input.GetMouseButton(0))    //発射
         {
             //発射の関数呼び出しはAnimaitonのEventでやってる
+            canMove = false;
             isFire = true;
+            isDash = false;
             myAnim.SetBool("Fire", true);
         }
         if (Input.GetMouseButtonUp(0))
         {
-            //isFire = false;
             myAnim.SetBool("Fire", false);
         }
 
@@ -308,7 +300,7 @@ public class PlayerAction : MonoBehaviour
             animSpeed = Mathf.Clamp(animSpeed, 1.0f, runSpeed / walkSpeed);
 
 
-            if (isFire)
+            if (!canMove)
             {
                 animSpeed = 1.0f;
             }
@@ -328,7 +320,15 @@ public class PlayerAction : MonoBehaviour
         }
 
 
-        img_Stamina.fillAmount = myStamina;
+        if(img_Stamina)
+        {
+            img_Stamina.fillAmount = myStamina;
+        }
+
+        if (!canMove)
+        {
+            dir = new Vector3(0.0f, 0.0f, 0.0f);
+        }
 
         dir.y = myRb.velocity.y;
         myRb.velocity = dir;
