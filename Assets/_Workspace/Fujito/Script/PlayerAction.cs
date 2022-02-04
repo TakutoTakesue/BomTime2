@@ -55,6 +55,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone;
     [SerializeField, Tooltip("恵方巻の最大所持数")] int maxEhomaki;
     [SerializeField, Tooltip("スタミナバー")] Image img_Stamina;
+    [SerializeField, Tooltip("豆を拾った時に増える弾数")] int plusBulletNum; 
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
@@ -130,6 +131,11 @@ public class PlayerAction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.tag == "Bean")
+        {
+            cntBullet + plusBulletNum;
+        }
+
         if(other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
         {
             myHp--;
