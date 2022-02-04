@@ -41,15 +41,24 @@ public class GameManager : MonoBehaviour
         {
             case Scene.Title:
 
-                //if()
-                //{
-                //    Elapsed = 0.0f;
-                //}
+                if (Input.GetButtonDown("space"))
+                {
+                    SceneManager.LoadScene("Select");
+                }
+
+                break;
+
+            case Scene.Select:
+
+
 
                 break;
 
             case Scene.Play:
                 Elapsed += Time.deltaTime;
+
+
+
                 break;
         }
 
