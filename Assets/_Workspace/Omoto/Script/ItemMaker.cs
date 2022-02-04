@@ -33,6 +33,7 @@ public class ItemMaker : MonoBehaviour
         float Mapmax_x = floorCollider.bounds.max.x;
         float Mapmin_z = floorCollider.bounds.min.z;
         float Mapmax_z = floorCollider.bounds.max.z;
+        float Map_y = floorCollider.bounds.max.y;
 
         while (true)
         {
@@ -46,7 +47,7 @@ public class ItemMaker : MonoBehaviour
                 float RanZ = Random.Range(Mapmin_z, Mapmax_z);
 
                 //生成位置決定
-                Vector3 pos = new Vector3(RanX, 0.5f, RanZ);
+                Vector3 pos = new Vector3(RanX, Map_y+1.0f, RanZ);
 
                 //確率で回復アイテム位置
                 if (Random.value < Healitems_probability)

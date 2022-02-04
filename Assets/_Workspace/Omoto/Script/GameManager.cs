@@ -41,10 +41,10 @@ public class GameManager : MonoBehaviour
         {
             case Scene.Title:
 
-                if (Input.GetButtonDown("space"))
-                {
-                    SceneManager.LoadScene("Select");
-                }
+                //if (Input.GetButtonDown("space"))
+                //{
+                //    SceneManager.LoadScene("Select");
+                //}
 
                 break;
 
