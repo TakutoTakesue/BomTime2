@@ -616,6 +616,10 @@ PrefabInstance:
       propertyPath: layerMask.Array.data[1].m_Bits
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2069934944699587901, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: hpmax
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: layerMask.Array.size
       value: 2
