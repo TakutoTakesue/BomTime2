@@ -5,6 +5,7 @@ using UnityEngine;
 public class m_EnemyManager : MonoBehaviour
 {
     int enemyCount = 0;
+    int EnemyCount => enemyCount;
     // Start is called before the first frame update
     void Start()
     {
