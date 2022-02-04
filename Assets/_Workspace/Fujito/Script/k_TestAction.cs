@@ -10,6 +10,11 @@ public class k_TestAction : MonoBehaviour
         Debug.Log(gameObject.GetComponent<MeshFilter>().mesh);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+    }
+
     // Update is called once per frame
     void Update()
     {
