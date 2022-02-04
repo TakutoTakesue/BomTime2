@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(M_StateAction))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, AttackCaller
+public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
 {
 
     [SerializeField, Header("通常状態のスピード")]
@@ -35,6 +35,9 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
     float deathInterval = 1.5f;
     [SerializeField, Header("Rayに当たるレイヤーの選択")]
     LayerMask[] layerMask;
+    [SerializeField, Header("攻撃範囲オブジェクト")]
+    GameObject attackObj;
+    
     // 経過時間をまとめたもの
     struct Elapsed
     {
@@ -73,6 +76,9 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
     State state;    // 自身の状態
     int patrolNo = 0;   // 巡回する順番
 
+    public float AttackIntelval => attackInterval;
+    public M_StateAction EnemyState => enemyState;
+
     // Start is called before the first frame update
 
     private void Awake()
@@ -98,6 +104,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
             mask += i.value;
         }
         myNavi.speed = normalSpeed;
+        attackObj.SetActive(false);
     }
 
     // 目的地に到着した場合の処理
@@ -117,6 +124,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         }
         myAnim.SetTrigger("Die");
         deathFlg = true;
+        attackObj.SetActive(false);
         StopOverlooking();
         var enemyManager = GameObject.FindGameObjectWithTag("EnemyManager");
         if (enemyManager)
@@ -142,19 +150,24 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller, Att
         CallDiscover();
     }
 
-    public void CallAttack()
+    public bool Attack()
     {
-        if (deathFlg) {
-            return;
-        }
-        if (elapsed.attackTimeElapsed <= 0 && state == State.discover)
+        if (deathFlg)
         {
-            myNavi.enabled = false;
-            myAnim.SetTrigger("Attack");
-            elapsed.attackTimeElapsed = attackInterval;
+            return false;
         }
+        if (elapsed.attackTimeElapsed > 0 || state != State.discover)
+        {
+            return false;
+        }
+        myNavi.enabled = false;
+        myAnim.SetTrigger("Attack");
+        elapsed.attackTimeElapsed = attackInterval;
+
+        return true;
     }
 
+  
     // 敵を発見したとき
     public void CallDiscover()
     {
