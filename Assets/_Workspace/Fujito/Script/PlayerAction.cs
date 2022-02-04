@@ -7,7 +7,7 @@ public class PlayerAction : MonoBehaviour
 {
     CameraAction act_Camera;
     M_StateAction act_MState;
-    Play_UI_Managet mng_PlayUI;
+    Play_UI_Manager mng_PlayUI;
     struct InputData
     {
         public float x, z;  //移動入力の値
