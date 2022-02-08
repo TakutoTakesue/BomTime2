@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Workspace/Omoto/Scene/ManagerScene.unity
+    guid: f3e1d11572310ae4193bc68400b6f9c5
   m_configObjects: {}

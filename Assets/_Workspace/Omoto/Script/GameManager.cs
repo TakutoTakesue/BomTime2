@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+///  全体のシーン遷移管理 
+///  全シーン通して必要なもの
+/// </summary>
+
 public class GameManager : MonoBehaviour
 {
-    // 経過時間.
-    public float Elapsed = 0.0f;
+
 
     //  シーン遷移.
     enum Scene
@@ -36,7 +40,6 @@ public class GameManager : MonoBehaviour
     // プレイスタート処理.
     void PlayStater()
     {
-        Elapsed = 0.0f;
     }
 
     // ゲーム
@@ -61,16 +64,14 @@ public class GameManager : MonoBehaviour
 
                 // ステージ選択.
             case Scene.Select:
-                Elapsed = 3.0f;
-
+                
                 
                 
                 break;
 
             case Scene.Play:
-                Elapsed += Time.deltaTime;
 
-
+                // 
 
                 break;
 

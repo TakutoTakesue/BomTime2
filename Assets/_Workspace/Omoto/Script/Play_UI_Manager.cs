@@ -19,7 +19,7 @@ public class Play_UI_Manager : MonoBehaviour
     [SerializeField] Slider slider;
 
     //　ゲームマネージャーの取得
-    [SerializeField] private GameManager ManaerScript;
+    [SerializeField]　private Play_TimeManager play_timeManager;
  
 
     M_StateAction act_MState;
@@ -35,7 +35,7 @@ public class Play_UI_Manager : MonoBehaviour
         slider.value = 1;
 
         GameObject gamemanager = GameObject.FindWithTag("GameController");
-        ManaerScript = gamemanager.GetComponent<GameManager>();
+        play_timeManager = gamemanager.GetComponent<Play_TimeManager>();
 
         act_MState = player.GetComponent<M_StateAction>();
         act_Player = player.GetComponent<PlayerAction>();
@@ -84,7 +84,7 @@ public class Play_UI_Manager : MonoBehaviour
     {
 
         PlayerHP_Bar(act_MState.HP, act_MState.HPMax);
-        Time_UI(ManaerScript.Elapsed);
+        Time_UI(play_timeManager.Elapsed);
 
         Bullet_UI(act_Player.GetBulletCnt);
         HealItem_UI(act_Player.GetEhomaki);
