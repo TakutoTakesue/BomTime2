@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
                 if(Input.GetButtonDown("BtnA"))
                 {
                     SceneManager.LoadScene("Select");
+                    scene = Scene.Select;
                 }
 
                 break;
@@ -71,7 +72,7 @@ public class GameManager : MonoBehaviour
 
             case Scene.Play:
 
-                // 
+               
 
                 break;
 
@@ -79,7 +80,11 @@ public class GameManager : MonoBehaviour
                 if (Input.GetButtonDown("BtnA"))
                 {
                     SceneManager.LoadScene("Title");
+                    scene = Scene.Title;
                 }
+                break;
+
+            default:
                 break;
         }
 
