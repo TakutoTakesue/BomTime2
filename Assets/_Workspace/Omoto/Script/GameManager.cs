@@ -10,8 +10,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
-
     //  シーン遷移.
     enum Scene
     {
@@ -30,6 +28,7 @@ public class GameManager : MonoBehaviour
     Scene scene;
     StageNum stage;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,14 +42,13 @@ public class GameManager : MonoBehaviour
     }
 
     // ゲーム
-    void GameEnd()
+    bool GameEnd()
     {
-
+        return true;
     }
     // Update is called once per frame
     void Update()
-    {
-       
+    {  
         switch (scene)
         {
             case Scene.Title:
@@ -65,15 +63,11 @@ public class GameManager : MonoBehaviour
 
                 // ステージ選択.
             case Scene.Select:
-                
-                
-                
+
                 break;
 
             case Scene.Play:
-
-               
-
+                
                 break;
 
             case Scene.Ranking:
