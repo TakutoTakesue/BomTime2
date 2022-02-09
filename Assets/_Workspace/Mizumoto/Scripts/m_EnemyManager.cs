@@ -6,11 +6,20 @@ public class m_EnemyManager : MonoBehaviour
 {
     int enemyCount = 0;
     int EnemyCount => enemyCount;
+    Play_TimeManager timeManager;
     // Start is called before the first frame update
     void Start()
     {
         var enemys = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach(var enemy in enemys){
+        var obj = GameObject.FindGameObjectWithTag("PlayManager");
+        if (obj != null)
+        {
+            timeManager = obj.GetComponent<Play_TimeManager>();
+        }
+        else {
+            Debug.LogWarning("PlayManagerが存在しません");
+        }
+        foreach (var enemy in enemys){
             ++enemyCount;
         }
         if (enemyCount == 0) {
@@ -22,6 +31,10 @@ public class m_EnemyManager : MonoBehaviour
         --enemyCount;
         if (enemyCount <= 0) {
             // ゲームマネージャーにゲームを終了する処理を送る
+            if (timeManager) {
+                timeManager.GameEnd();
+            }
+            Debug.Log("ゲーム終了");
         }
     }
 
