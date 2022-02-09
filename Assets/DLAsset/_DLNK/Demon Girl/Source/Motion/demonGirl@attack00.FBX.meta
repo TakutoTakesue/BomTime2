@@ -424,10 +424,17 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0
-        functionName: Attack
+      - time: 0.27946362
+        functionName: BginAttackAnim
         data: 
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: 2d4ec05ecda0b194f87f36df2fdc3da7, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.470007
+        functionName: EndAttackAnim
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 2d4ec05ecda0b194f87f36df2fdc3da7, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0

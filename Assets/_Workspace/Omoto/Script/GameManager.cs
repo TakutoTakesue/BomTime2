@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+///  全体のシーン遷移管理 
+///  全シーン通して必要なもの
+/// </summary>
+
 public class GameManager : MonoBehaviour
 {
-    // 経過時間.
-    public float Elapsed = 0.0f;
+
 
     //  シーン遷移.
     enum Scene
@@ -18,9 +22,9 @@ public class GameManager : MonoBehaviour
     }
 
     // ステージ数.
-    enum StageNum
+    public enum StageNum
     {
-        stage1=0
+        stage1
     }
 
     Scene scene;
@@ -33,32 +37,54 @@ public class GameManager : MonoBehaviour
         stage = StageNum.stage1;
     }
 
+    // プレイスタート処理.
+    void PlayStater()
+    {
+    }
+
+    // ゲーム
+    void GameEnd()
+    {
+
+    }
     // Update is called once per frame
     void Update()
     {
- 
-        switch(scene)
+       
+        switch (scene)
         {
             case Scene.Title:
 
-                //if (Input.GetButtonDown("space"))
-                //{
-                //    SceneManager.LoadScene("Select");
-                //}
+                if(Input.GetButtonDown("BtnA"))
+                {
+                    SceneManager.LoadScene("Select");
+                    scene = Scene.Select;
+                }
 
                 break;
 
+                // ステージ選択.
             case Scene.Select:
-
-
-
+                
+                
+                
                 break;
 
             case Scene.Play:
-                Elapsed += Time.deltaTime;
 
+               
 
+                break;
 
+            case Scene.Ranking:
+                if (Input.GetButtonDown("BtnA"))
+                {
+                    SceneManager.LoadScene("Title");
+                    scene = Scene.Title;
+                }
+                break;
+
+            default:
                 break;
         }
 
