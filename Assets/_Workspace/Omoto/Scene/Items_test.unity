@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 121518389}
   m_Layer: 0
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: PlayManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -390,7 +390,8 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6085781680206028974, guid: 54c0d27e4f6ce604288628f6e7fdad82, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 54c0d27e4f6ce604288628f6e7fdad82, type: 3}
 --- !u!114 &911590214 stripped
 MonoBehaviour:
