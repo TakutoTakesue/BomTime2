@@ -52,10 +52,10 @@ public class PlayerAction : MonoBehaviour
     [SerializeField, Tooltip("弾の初期装弾数")] int startBulletCnt;
 
     [Header("Game設計データ")]
-    [SerializeField, Tooltip("デッドゾーン"),Range(0,1)] float deadZone;
+    [SerializeField, Tooltip("デッドゾーン"), Range(0, 1)] float deadZone;
     [SerializeField, Tooltip("恵方巻の最大所持数")] int maxEhomaki;
     [SerializeField, Tooltip("スタミナバー")] Image img_Stamina;
-    [SerializeField, Tooltip("豆を拾った時に増える弾数")] int plusBulletNum; 
+    [SerializeField, Tooltip("豆を拾った時に増える弾数")] int plusBulletNum;
 
     //Playerの内部データ
     float animSpeed;        //走るときのAnimationスピード
@@ -73,6 +73,8 @@ public class PlayerAction : MonoBehaviour
     bool isFire;            //true: 発砲中
     bool isDash;
     bool test;
+    bool padIsFire;
+    bool padIsDash;
 
 
     //Component
@@ -81,8 +83,7 @@ public class PlayerAction : MonoBehaviour
     SkinnedMeshRenderer[] mySM_Renderer;
     Material myMaterial;
 
-    BoxCollider floorColider;
-    
+
     public bool IsFire
     {
         get { return isFire; }
@@ -93,6 +94,7 @@ public class PlayerAction : MonoBehaviour
         get { return cntEhomaki; }
     }
 
+    //GetComponent<PlayerAction>().GetBulletCnt これで弾の数を取得できます
     public int GetBulletCnt
     {
         get { return cntBullet; }
@@ -106,7 +108,7 @@ public class PlayerAction : MonoBehaviour
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
-        
+
         act_Camera = cameraMaster.GetComponent<CameraAction>();
         act_MState = GetComponent<M_StateAction>();
 
@@ -125,18 +127,20 @@ public class PlayerAction : MonoBehaviour
         canMove = true;
         isDamage = false;
         isFire = false;
+        padIsFire = false;
+        padIsDash = false;
         elapsed.run = 0.0f;
         elapsed.invincivle = 0.0f;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Bean")
+        if (other.gameObject.tag == "Bean")
         {
             cntBullet += plusBulletNum;
         }
 
-        if(other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
+        if (other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
         {
             myHp--;
             isDamage = true;
@@ -187,14 +191,20 @@ public class PlayerAction : MonoBehaviour
     {
         test = !test;
         elapsed.test += Time.deltaTime;
-        if(elapsed.test >= 1.0f)
+        if (elapsed.test >= 1.0f)
         {
-            for(int i = 0;i < mySM_Renderer.Length;i++)
+            for (int i = 0; i < mySM_Renderer.Length; i++)
             {
                 mySM_Renderer[i].enabled = test;
             }
             elapsed.test = 0.0f;
         }
+    }
+
+    void OnDamage()
+    {
+        myAnim.SetTrigger("Damage");
+        canMove = false;
     }
 
 
@@ -221,31 +231,65 @@ public class PlayerAction : MonoBehaviour
             {
                 isDash = false;
             }
+
+            if (Input.GetAxis("Trigger_L") > deadZone && !isDash)
+            {
+                if ((myStamina * 100) >= subtractionPersent)
+                {
+                    myStamina -= subtractionPersent / 100.0f;
+                    isDash = true;
+                    padIsDash = true;
+                }
+            }
+
+            if (Input.GetAxis("Trigger_L") < deadZone && isDash && padIsDash)
+            {
+                isDash = false;
+            }
         }
         else
         {
+            isDash = false;
+            padIsDash = false;
             Vector3 lookPos = transform.position - cameraMaster.transform.position;
             transform.LookAt(lookPos);
 
             gameObject.transform.localEulerAngles = new Vector3(0, act_Camera.GetRotY, 0);
         }
 
-        if (Input.GetMouseButton(0))    //発射
+        if (Input.GetMouseButton(0) || Input.GetAxis("Trigger_R") > 0.6f)    //発射
         {
             //発射の関数呼び出しはAnimaitonのEventでやってる
             canMove = false;
             isFire = true;
             isDash = false;
             myAnim.SetBool("Fire", true);
+            if(Input.GetAxis("Trigger_R") > 0.6f)
+            {
+                padIsFire = true;
+            }
         }
         if (Input.GetMouseButtonUp(0))
         {
             myAnim.SetBool("Fire", false);
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if(padIsFire)
+        {
+            if(Input.GetAxis("Trigger_R") < deadZone)
+            {
+                myAnim.SetBool("Fire", false);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("BtnY"))
         {
             fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            OnDamage();
         }
     }
 
