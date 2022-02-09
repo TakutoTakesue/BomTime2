@@ -129,6 +129,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
         {
             StartCoroutine("Flash");
             myAnim.SetTrigger("Damage");
+            isDamage = true;
             canMove = false;
         }
     }
