@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class PlayerAction : MonoBehaviour
+    
+public class PlayerAction : MonoBehaviour,StateCaller
 {
     CameraAction act_Camera;
     M_StateAction act_MState;
@@ -71,8 +71,9 @@ public class PlayerAction : MonoBehaviour
 
     bool canMove;
     bool isFire;            //true: 発砲中
+    bool isDead;
     bool isDash;
-    bool test;
+    bool isInvinsivle;
     bool padIsFire;
     bool padIsDash;
 
@@ -87,6 +88,11 @@ public class PlayerAction : MonoBehaviour
     public bool IsFire
     {
         get { return isFire; }
+    }
+
+    public bool IsDead
+    {
+        get { return isDead; }
     }
 
     public int GetEhomaki
@@ -104,7 +110,6 @@ public class PlayerAction : MonoBehaviour
     void Start()
     {
         Ready();
-
         obj_Copy = Instantiate(gameObject);
         obj_Copy.SetActive(false);      //コピーを作って隠す
         animSpeed = 0.0f;
@@ -118,6 +123,25 @@ public class PlayerAction : MonoBehaviour
         myMaterial = obj_Copy.GetComponentInChildren<SkinnedMeshRenderer>().material;
     }
 
+    public void CallDamage()
+    {
+        if(!isDamage)
+        {
+            StartCoroutine("Flash");
+            myAnim.SetTrigger("Damage");
+            canMove = false;
+        }
+    }
+
+    public void CallDead()
+    {
+        if(!isDamage && !IsDead)
+        {
+            myAnim.SetTrigger("Dead");
+            isDead = true;
+        }
+    }
+
     private void Ready()
     {
         myHp = maxHp;
@@ -127,6 +151,7 @@ public class PlayerAction : MonoBehaviour
         canMove = true;
         isDamage = false;
         isFire = false;
+        isDead = false;
         padIsFire = false;
         padIsDash = false;
         elapsed.run = 0.0f;
@@ -139,11 +164,48 @@ public class PlayerAction : MonoBehaviour
         {
             cntBullet += plusBulletNum;
         }
+    }
 
-        if (other.gameObject.tag == "Enemy" && !isDamage) //&& other.gameObject.GetComponent<EnemyAction>().IsAttack
+    IEnumerator Flash()
+    {
+        isInvinsivle = true;
+        for (int i = 0; i < mySM_Renderer.Length; i++)
         {
-            myHp--;
-            isDamage = true;
+            mySM_Renderer[i].enabled = false;
+        }
+
+        while (true)
+        {
+            elapsed.invincivle += Time.deltaTime;
+            if (elapsed.invincivle % 0.2f >= 0.1f && isInvinsivle)
+            {
+                for (int i = 0; i < mySM_Renderer.Length; i++)
+                {
+                    mySM_Renderer[i].enabled = isInvinsivle;
+                }
+                isInvinsivle = false;
+            }
+            else if(elapsed.invincivle % 0.2f < 0.1f && !isInvinsivle)
+            {
+                for (int i = 0; i < mySM_Renderer.Length; i++)
+                {
+                    mySM_Renderer[i].enabled = isInvinsivle;
+                }
+                isInvinsivle = true;
+            }
+
+            if (elapsed.invincivle >= invincivleTime)
+            {
+                for (int i = 0; i < mySM_Renderer.Length; i++)
+                {
+                    mySM_Renderer[i].enabled = true;
+                }
+                isDamage = false;
+                elapsed.invincivle = 0.0f;
+                break;
+            }
+
+            yield return null;
         }
     }
 
@@ -187,30 +249,38 @@ public class PlayerAction : MonoBehaviour
         isFire = value == 0 ? false : true;
     }
 
-    void FlashTest()
-    {
-        test = !test;
-        elapsed.test += Time.deltaTime;
-        if (elapsed.test >= 1.0f)
-        {
-            for (int i = 0; i < mySM_Renderer.Length; i++)
-            {
-                mySM_Renderer[i].enabled = test;
-            }
-            elapsed.test = 0.0f;
-        }
-    }
+    //void Flash()
+    //{
+    //    isInvinsivle = !isInvinsivle;
+    //    elapsed.test += Time.deltaTime;
+    //    if (elapsed.test >= 1.0f)
+    //    {
+    //        for (int i = 0; i < mySM_Renderer.Length; i++)
+    //        {
+    //            mySM_Renderer[i].enabled = isInvinsivle;
+    //        }
+    //        elapsed.test = 0.0f;
+    //    }
+    //}
 
     void OnDamage()
     {
         myAnim.SetTrigger("Damage");
         canMove = false;
+        StartCoroutine("Flash");
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if(isDead)
+        {
+            dir.x = 0.0f;
+            dir.z = 0.0f;
+            return;
+        }
+
         inputData.x = 0;
         inputData.z = 0;
         
@@ -289,21 +359,18 @@ public class PlayerAction : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Return))
         {
-            OnDamage();
+            CallDamage();
         }
     }
 
     private void FixedUpdate()
     {
-        if(isDamage)
+        if(isDead)
         {
-            elapsed.invincivle += Time.deltaTime;
-            if(elapsed.invincivle >= invincivleTime)
-            {
-                isDamage = false;
-                elapsed.invincivle = 0.0f;
-            }
+            return;
         }
+
+        
         //FlashTest();
 
         Vector3 axisDirV = Vector3.Scale(cameraMaster.transform.forward, new Vector3(1, 0, 1)).normalized;
