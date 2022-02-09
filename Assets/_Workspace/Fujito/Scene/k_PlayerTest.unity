@@ -538,6 +538,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1585899602}
     - target: {fileID: 2770747360926756799, guid: 6777e38bd8456b841af8dbc275dde4c1, type: 3}
+      propertyPath: invincivleTime
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2770747360926756799, guid: 6777e38bd8456b841af8dbc275dde4c1, type: 3}
       propertyPath: startBulletCnt
       value: 50
       objectReference: {fileID: 0}
