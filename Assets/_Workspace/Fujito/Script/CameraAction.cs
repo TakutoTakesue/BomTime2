@@ -27,6 +27,7 @@ public class CameraAction : MonoBehaviour
     [SerializeField, Tooltip("仰角制限")] float maxPitch;   //仰角制限
     [SerializeField, Tooltip("俯角制限")] float minPitch;   //俯角制限
     [SerializeField, Tooltip("感度")] Vector2 bias;         //カメラの感度
+    [SerializeField, Tooltip("Controllerでのスピード調整"), Range(0.0f, 1.0f)] float padBias;
     [SerializeField] Vector3 offset;                        //rayの発射位置のオフセット
 
     float h;
@@ -97,6 +98,9 @@ public class CameraAction : MonoBehaviour
     {
         mouseData.horizontal = Input.GetAxis("Mouse X");
         mouseData.vertical = -Input.GetAxis("Mouse Y");
+
+        padData.horizontal = Input.GetAxis("Horizontal_R") * padBias;
+        padData.vertical = Input.GetAxis("Vertical_R") * padBias;
 
         h = (Mathf.Abs(padData.horizontal) < Mathf.Abs(mouseData.horizontal)) ? mouseData.horizontal : padData.horizontal;
         v = (Mathf.Abs(padData.vertical) < Mathf.Abs(mouseData.vertical)) ? mouseData.vertical : padData.vertical;
