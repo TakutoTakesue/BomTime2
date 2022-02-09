@@ -13,6 +13,11 @@ public class Play_TimeManager : MonoBehaviour
         
     }
 
+    public void GameEnd()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
