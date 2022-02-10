@@ -30,6 +30,7 @@ public class Play_TimeManager : MonoBehaviour
 
     public void GameEnd()
     {
+        AudioManager.Instance.StopBgm(2.0f);
         Invoke("NextScene",2.0f);
 
     }
