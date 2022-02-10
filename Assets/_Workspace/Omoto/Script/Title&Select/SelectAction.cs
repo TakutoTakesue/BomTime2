@@ -22,12 +22,12 @@ public class SelectAction : MonoBehaviour
 
     void Stage2_onclick()
     {
-        SceneManager.LoadScene("Stag2");
+        SceneManager.LoadScene("Stage2");
     }
 
     void Stage3_onclick()
     {
-        SceneManager.LoadScene("Stag3");
+        SceneManager.LoadScene("Stage3");
     }
 
     // Update is called once per frame
