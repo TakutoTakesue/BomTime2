@@ -1457,7 +1457,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 045f6c63d29396c4e8ad3de357e93e0e, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1527,8 +1527,8 @@ MonoBehaviour:
   startBulletCnt: 0
   deadZone: 0.1
   maxEhomaki: 0
-  isController: 0
   img_Stamina: {fileID: 0}
+  plusBulletNum: 0
 --- !u!114 &4924108313974044366
 MonoBehaviour:
   m_ObjectHideFlags: 0
