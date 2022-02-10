@@ -2662,8 +2662,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 494526660}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.79686, y: 16.914944, z: 3.4565067}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.41, y: 16.914944, z: 0.8}
   m_LocalScale: {x: 0.1, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 1098802500}
@@ -5722,6 +5722,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 762013225}
     m_Modifications:
+    - target: {fileID: 1366907379, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2069254483365206606, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5768,7 +5772,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587901, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: hpmax
-      value: 8
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: vigilantTime
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: patrolPos.Array.size
@@ -8426,6 +8434,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 762013225}
     m_Modifications:
+    - target: {fileID: 1366907379, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2069254483365206606, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -8472,15 +8484,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587901, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: hpmax
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587901, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: attack
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: dashSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: normalSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: vigilantTime
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: patrolPos.Array.size
@@ -8506,6 +8526,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Char_DemonGirl (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2116239632136718178, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b248ebf6977b39f44a3238a63bf86dfb, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
 --- !u!1001 &1549484686
@@ -10550,6 +10574,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 762013225}
     m_Modifications:
+    - target: {fileID: 1366907379, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2069254483365206606, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -10596,11 +10624,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587901, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: hpmax
-      value: 8
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: vigilantTime
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2069934944699587903, guid: ca5869dc3868b9b468663b367df715c7, type: 3}
       propertyPath: patrolPos.Array.size
@@ -11220,7 +11248,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5250707791172338648, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
       propertyPath: hpmax
-      value: 15
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5250707791172338650, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
+      propertyPath: dashSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5250707791172338650, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
+      propertyPath: normalSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5250707791172338650, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
+      propertyPath: vigilantTime
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5250707791172338650, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
       propertyPath: patrolPos.Array.data[0]
@@ -11230,5 +11270,13 @@ PrefabInstance:
       propertyPath: patrolPos.Array.data[1]
       value: 
       objectReference: {fileID: 318810744}
+    - target: {fileID: 5276464546093226375, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b248ebf6977b39f44a3238a63bf86dfb, type: 2}
+    - target: {fileID: 6082005982147364630, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c12f0b03227b834ea2312a852341dc3, type: 3}
