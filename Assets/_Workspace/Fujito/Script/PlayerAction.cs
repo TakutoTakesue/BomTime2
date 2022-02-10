@@ -375,9 +375,10 @@ public class PlayerAction : MonoBehaviour,StateCaller
         if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("BtnY"))
         {
             fireMode = fireMode == FireMode.single ? FireMode.diffusion : FireMode.single;
+            AudioManager.Instance.StartSe("NoBullet_SE");  
         }
 
-        if(Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             CallDamage();
         }
