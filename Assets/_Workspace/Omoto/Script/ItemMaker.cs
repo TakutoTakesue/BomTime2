@@ -52,7 +52,7 @@ public class ItemMaker : MonoBehaviour
                 if (Random.value < Healitems_probability)
                 {
                     //生成位置決定(回復アイテム)
-                    Vector3 pos = new Vector3(RanX, Map_y+1.0f, RanZ);
+                    Vector3 pos = new Vector3(RanX, Map_y+0.5f, RanZ);
                     Instantiate(HealItem, pos, Quaternion.identity);
                 }
                 else
