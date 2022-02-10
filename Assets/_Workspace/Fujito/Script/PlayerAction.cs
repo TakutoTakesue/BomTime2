@@ -138,6 +138,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
     {
         if(!isDamage && !IsDead)
         {
+            AudioManager.Instance.StartSe("PlayerDown_SE");
             myAnim.SetTrigger("Dead");
             isDead = true;
         }
@@ -164,6 +165,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
         if (other.gameObject.tag == "Bean")
         {
             cntBullet += plusBulletNum;
+            AudioManager.Instance.StartSe("GetBullet_SE");
         }
     }
 
@@ -220,6 +222,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
                     GameObject bullet_0 = Instantiate(obj_Bullet, shootPos.transform.position, gameObject.transform.rotation);
                     bullet_0.transform.LookAt(tForm_ToShoot[0].position);
                     cntBullet--;
+                    AudioManager.Instance.StartSe("Shot_SE");
                     break;
                 case FireMode.diffusion:
                     if (cntBullet >= tForm_ToShoot.Length)
@@ -230,10 +233,16 @@ public class PlayerAction : MonoBehaviour,StateCaller
                             bullet_1.transform.LookAt(tForm_ToShoot[i].position);
                             cntBullet--;
                         }
+                        AudioManager.Instance.StartSe("Shot_SE");
+                    }
+                    else
+                    {
+                        AudioManager.Instance.StartSe("NoBullet_SE");
                     }
                     break;
             }
         }
+        AudioManager.Instance.StartSe("NoBullet_SE");
     }
     public void SetCanMoveFlgFalse()
     {

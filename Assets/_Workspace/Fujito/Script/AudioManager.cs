@@ -26,9 +26,9 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 	[SerializeField, Tooltip("SE音量"), Range(0.0f, 1.0f)] float seVolume;
 
 	[Header("Slider")]
-	[SerializeField] Slider masterSlider;
-	[SerializeField] Slider bgmrSlider;
-	[SerializeField] Slider seSlider;
+	//[SerializeField] Slider masterSlider;
+	//[SerializeField] Slider bgmrSlider;
+	//[SerializeField] Slider seSlider;
 
 	[Header("Sound_Data")]
 	[SerializeField, Tooltip("BGM")] Sound_Data[] bgm_Clip;
@@ -100,7 +100,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         }
 		for (int i = 0; i < bgm_Clip.Length; i++)
 		{
-			if (name == bgm_Clip[i].name)
+			if (name == bgm_Clip[i].name || name == se_Clip[i].clip.name)
 			{
 				if(fadeTime > 0.0f)
                 {
@@ -131,7 +131,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 	{
 		for (int i = 0; i < se_Clip.Length; i++)
 		{
-			if (name == se_Clip[i].name)
+			if (name == se_Clip[i].name || name == se_Clip[i].clip.name)
 			{
 				seSource.PlayOneShot(se_Clip[i].clip);
 				break;
