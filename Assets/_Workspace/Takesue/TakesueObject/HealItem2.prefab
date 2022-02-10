@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5967286729771900063}
   m_Layer: 0
   m_Name: HealItem2
-  m_TagString: Untagged
+  m_TagString: Recoveryitem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
