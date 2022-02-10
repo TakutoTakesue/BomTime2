@@ -11,12 +11,16 @@ public class HealItem : MonoBehaviour
 
     public float DestoryCnt = 30.0f;
 
+    float Start_y;
+
     // Start is called before the first frame update
     void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
 
         transform.rotation= Quaternion.AngleAxis(-90.0f, new Vector3(1, 0, 0));
+
+        Start_y = transform.position.y;
 
         // 60秒経過で削除　(外してもいいかなぁ)
         Destroy(gameObject, DestoryCnt);
@@ -49,6 +53,6 @@ public class HealItem : MonoBehaviour
         // 回転
         transform.Rotate(new Vector3(0.0f, 0.0f, 0.3f));
         // 上下
-        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.45f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, Start_y + Mathf.Sin(Time.time) * 0.45f, transform.position.z);
     }
 }
