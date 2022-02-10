@@ -122,6 +122,9 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
         {
             return;
         }
+        // 音鳴らす
+        AudioManager.Instance.StartSe("EnemydownSE");
+
         myAnim.SetTrigger("Die");
         deathFlg = true;
         attackObj.SetActive(false);
@@ -147,6 +150,7 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
     // ダメージを受けた時の処理
     public void CallDamage()
     {
+        AudioManager.Instance.StartSe("AttackHit");
         CallDiscover();
     }
 
@@ -161,7 +165,8 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             return false;
         }
         myNavi.enabled = false;
-        myAnim.SetTrigger("Attack");
+        AudioManager.Instance.StartSe("EnemyAttack_SE");
+        myAnim.SetTrigger("Attack"); 
         elapsed.attackTimeElapsed = attackInterval;
 
         return true;
