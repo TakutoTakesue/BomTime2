@@ -167,6 +167,10 @@ public class PlayerAction : MonoBehaviour,StateCaller
             cntBullet += plusBulletNum;
             AudioManager.Instance.StartSe("GetBullet_SE");
         }
+        if(other.gameObject.tag == "Recoveryitem")
+        {
+            AudioManager.Instance.StartSe("Kaihuku_SE");
+        }
     }
 
     IEnumerator Flash()
