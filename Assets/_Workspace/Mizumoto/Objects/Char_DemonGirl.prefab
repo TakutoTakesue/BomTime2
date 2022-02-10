@@ -934,7 +934,7 @@ MonoBehaviour:
   deathInterval: 1.5
   layerMask:
   - serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 4
   attackObj: {fileID: 1366907376}
 --- !u!114 &2069934944699587901
 MonoBehaviour:
