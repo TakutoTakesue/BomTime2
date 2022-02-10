@@ -136,6 +136,10 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 				seSource.PlayOneShot(se_Clip[i].clip);
 				break;
 			}
+			if(i + 1 == se_Clip.Length)
+            {
+				Debug.LogError("指定された名前のSEは見つかりませんでした。");
+            }
 		}
 	}
 
