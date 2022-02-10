@@ -90,6 +90,11 @@ public class PlayerAction : MonoBehaviour,StateCaller
         get { return isFire; }
     }
 
+    public bool IsDamage
+    {
+        get { return isDamage; }
+    }
+
     public bool IsDead
     {
         get { return isDead; }
@@ -170,6 +175,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
         if(other.gameObject.tag == "Recoveryitem")
         {
             AudioManager.Instance.StartSe("Kaihuku_SE");
+            act_MState.Recovery(1);
         }
     }
 
