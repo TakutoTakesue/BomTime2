@@ -46,16 +46,19 @@ public class ItemMaker : MonoBehaviour
                 float RanX = Random.Range(Mapmin_x, Mapmax_x);
                 float RanZ = Random.Range(Mapmin_z, Mapmax_z);
 
-                //生成位置決定
-                Vector3 pos = new Vector3(RanX, Map_y+1.0f, RanZ);
+                
 
                 //確率で回復アイテム位置
                 if (Random.value < Healitems_probability)
                 {
+                    //生成位置決定(回復アイテム)
+                    Vector3 pos = new Vector3(RanX, Map_y+1.0f, RanZ);
                     Instantiate(HealItem, pos, Quaternion.identity);
                 }
                 else
                 {
+                    //生成位置決定(銃弾)
+                    Vector3 pos = new Vector3(RanX, Map_y, RanZ);
                     Instantiate(Bean, pos, Quaternion.identity);
                 }
              
@@ -64,7 +67,7 @@ public class ItemMaker : MonoBehaviour
     }
 
     // ゲーム終了時などの全撤去
-void ClearBeans()
+    void ClearBeans()
     {
         // フィールド上に存在する豆を探して削除
         GameObject[]　Beans = GameObject.FindGameObjectsWithTag("Bean");
