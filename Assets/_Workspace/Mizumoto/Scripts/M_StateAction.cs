@@ -37,7 +37,7 @@ public class M_StateAction : MonoBehaviour
         if (hp <= 0) {
             return;
         }
-        hp -= Mathf.Clamp(damage, 0, hp);
+        hp = Mathf.Clamp(hp - damage, 0, hp);
         if (hp <= 0)
         {
             // 死んだ場合は死亡処理
@@ -54,7 +54,7 @@ public class M_StateAction : MonoBehaviour
     // 回復する処理
     public void Recovery(int recovery)
     {
-        hp += Mathf.Clamp(recovery, 0, hpmax);
+        hp = Mathf.Clamp(hp + recovery, 0, hpmax);
     }
 
 

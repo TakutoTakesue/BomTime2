@@ -20,12 +20,22 @@ public class M_AttackAction : MonoBehaviour
             // 攻撃
             var state = other.GetComponent<M_StateAction>();
             // 敵にステータスがあってプレイヤーにもステータスがある場合
-            if (state&& enemy.EnemyState)
+            if (state && enemy.EnemyState)
             {
-                // 敵の攻撃力分ダメージを与える
-                state.OnDamage(enemy.EnemyState.Attack);
-                // 攻撃判定を消す
-                gameObject.SetActive(false);
+                var playerScript= other.GetComponent<PlayerAction>();
+
+                if (playerScript)
+                {
+                    if (!playerScript.IsDamage) {
+                        // 敵の攻撃力分ダメージを与える
+                        state.OnDamage(enemy.EnemyState.Attack);
+                        // 攻撃判定を消す
+                        gameObject.SetActive(false); 
+                    }
+                }
+                else {
+                    Debug.LogWarning("プレイヤーにplayerScriptがついていません");
+                }
             }
         }
     }
