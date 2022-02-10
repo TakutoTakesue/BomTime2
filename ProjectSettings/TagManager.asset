@@ -9,6 +9,8 @@ TagManager:
   - EnemyManager
   - Gun
   - PlayManager
+  - Bean
+  - Recoveryitem
   layers:
   - Default
   - TransparentFX
