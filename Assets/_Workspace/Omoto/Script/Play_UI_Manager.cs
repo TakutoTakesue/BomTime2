@@ -34,8 +34,17 @@ public class Play_UI_Manager : MonoBehaviour
         //Sliderを満タンにする。
         slider.value = 1;
 
-        GameObject gamemanager = GameObject.FindWithTag("GameController");
-        play_timeManager = gamemanager.GetComponent<Play_TimeManager>();
+        GameObject playmanager = GameObject.FindWithTag("PlayManager");
+
+        if(playmanager!=null)
+        {
+            play_timeManager = playmanager.GetComponent<Play_TimeManager>();
+        }
+        else
+        {
+            Debug.LogError("PlayManager_NotFind");
+        }
+
 
         act_MState = player.GetComponent<M_StateAction>();
         act_Player = player.GetComponent<PlayerAction>();
