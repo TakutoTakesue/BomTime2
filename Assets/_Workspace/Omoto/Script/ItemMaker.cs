@@ -33,7 +33,7 @@ public class ItemMaker : MonoBehaviour
         float Mapmax_x = floorCollider.bounds.max.x;
         float Mapmin_z = floorCollider.bounds.min.z;
         float Mapmax_z = floorCollider.bounds.max.z;
-        float Map_y = floorCollider.bounds.max.y;
+        float Map_y = floorCollider.bounds.max.y+1.0f;
 
         while (true)
         {
