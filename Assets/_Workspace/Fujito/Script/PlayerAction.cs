@@ -165,7 +165,7 @@ public class PlayerAction : MonoBehaviour,StateCaller
         if (other.gameObject.tag == "Bean")
         {
             cntBullet += plusBulletNum;
-            AudioManager.Instance.StartSe("GetBullet_SE ");
+            AudioManager.Instance.StartSe("GetBullet_SE");
         }
     }
 
