@@ -45,7 +45,6 @@ public class Play_UI_Manager : MonoBehaviour
             Debug.LogError("PlayManager_NotFind");
         }
 
-
         act_MState = player.GetComponent<M_StateAction>();
         act_Player = player.GetComponent<PlayerAction>();
     }
