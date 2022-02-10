@@ -23,17 +23,23 @@ public class m_EnemyManager : MonoBehaviour
             ++enemyCount;
         }
         if (enemyCount == 0) {
-            // ゲームマネージャーにゲームを終了する処理を送る
+            GameEnd();
         }
     }
 
     public void EnemyDead() {
         --enemyCount;
         if (enemyCount <= 0) {
-            // ゲームマネージャーにゲームを終了する処理を送る
-            if (timeManager) {
-                timeManager.GameEnd();
-            }
+            GameEnd();
+        }
+    }
+
+    // ゲームマネージャーにゲームを終了する処理を送る
+    void GameEnd() {
+        if (timeManager)
+        {
+            AudioManager.Instance.StartSe("End_SE");
+            timeManager.GameEnd();
             Debug.Log("ゲーム終了");
         }
     }
