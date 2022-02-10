@@ -15,7 +15,6 @@ public class TitleAction : MonoBehaviour
     void Start()
     {
         txtNavi.text = "Press A Start";
-
     }
 
     // Update is called once per frame
