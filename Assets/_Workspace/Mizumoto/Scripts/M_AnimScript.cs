@@ -20,6 +20,7 @@ public class M_AnimScript : MonoBehaviour
     public void BginAttackAnim()
     {
         attackFlg = true;
+        AudioManager.Instance.StartSe("EnemyAttack_SE");
         // 攻撃はじめ
         attackObj.SetActive(true);
     }
