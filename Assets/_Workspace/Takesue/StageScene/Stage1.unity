@@ -1542,7 +1542,7 @@ PrefabInstance:
       objectReference: {fileID: 5967286729771900060, guid: f8d3fb4dd8e644241ad4c4972172a4a1, type: 3}
     - target: {fileID: 6103119624995278537, guid: ece43de64c43e854ca5e085251569c49, type: 3}
       propertyPath: Healitems_probability
-      value: 0.1
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7767022760599732979, guid: ece43de64c43e854ca5e085251569c49, type: 3}
       propertyPath: m_Name
@@ -4683,6 +4683,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2693807738327224430, guid: 2fa6506b2fff1fd459ea91acd8a2e39d, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2969870117219292379, guid: 2fa6506b2fff1fd459ea91acd8a2e39d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
