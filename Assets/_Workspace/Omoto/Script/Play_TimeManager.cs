@@ -16,7 +16,7 @@ public class Play_TimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        AudioManager.Instance.StartBgm("Play_BGM", 2.0f);   
     }
 
     public void GameEnd()
