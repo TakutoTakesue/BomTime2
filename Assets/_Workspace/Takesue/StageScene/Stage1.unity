@@ -1471,7 +1471,7 @@ PrefabInstance:
       objectReference: {fileID: 732270818}
     - target: {fileID: 6103119624995278537, guid: ece43de64c43e854ca5e085251569c49, type: 3}
       propertyPath: Healitems_probability
-      value: 1
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7767022760599732979, guid: ece43de64c43e854ca5e085251569c49, type: 3}
       propertyPath: m_Name
