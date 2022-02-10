@@ -165,7 +165,6 @@ public class M_EnemyAIBase : MonoBehaviour, StateCaller, SensingRangeCaller
             return false;
         }
         myNavi.enabled = false;
-        AudioManager.Instance.StartSe("EnemyAttack_SE");
         myAnim.SetTrigger("Attack"); 
         elapsed.attackTimeElapsed = attackInterval;
 
