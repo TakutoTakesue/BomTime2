@@ -23,9 +23,9 @@ public class TitleAction : MonoBehaviour
         Elapsed += Time.deltaTime;
 
         Elapsed %= 1.0f;
-        txtNavi.text = (Elapsed < 0.8f) ? "Press A Start" : "";
+        txtNavi.text = (Elapsed < 0.8f) ? "Press A \n or \n Click Start" : "";
 
-        if (Input.GetButtonDown("BtnA"))
+        if (Input.GetButtonDown("BtnA")||Input.GetMouseButtonDown(0))
         {
             SceneManager.LoadScene("Select");
         }
