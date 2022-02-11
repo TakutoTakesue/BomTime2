@@ -10,7 +10,8 @@ public class Play_TimeManager : MonoBehaviour
 
     public static float Score;
 
-    bool GameOverFlg = false;
+    public bool GameOverFlg = false;
+    public bool GameClearFlg = false;
 
     //プレイヤーのオブジェクト
     [SerializeField] GameObject player;
@@ -26,10 +27,16 @@ public class Play_TimeManager : MonoBehaviour
         act_Player = player.GetComponent<PlayerAction>();
 
         Score = 0.0f;
+        GameOverFlg = false;
+        GameClearFlg = false;
     }
 
     public void GameEnd()
     {
+        if(!GameOverFlg)
+        {
+            GameClearFlg = true;
+        }
         AudioManager.Instance.StopBgm(2.0f);
         Invoke("NextScene",2.0f);
 
@@ -37,6 +44,7 @@ public class Play_TimeManager : MonoBehaviour
 
     void NextScene()
     {
+
         if(GameOverFlg)
         {
             SceneManager.LoadScene("Select");

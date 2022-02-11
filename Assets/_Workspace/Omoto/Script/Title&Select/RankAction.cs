@@ -25,11 +25,11 @@ public class RankAction : MonoBehaviour
 
         Elapsed %= 1.0f;
 
-        txtNavi.text = (Elapsed < 0.8f) ? "Press A Title" : "";
+        txtNavi.text = (Elapsed < 0.8f) ? "Press A or Click Title" : "";
 
         txtScore.text = "TIME:" + Score.ToString("f1") + "s";
 
-        if (Input.GetButtonDown("BtnA"))
+        if (Input.GetButtonDown("BtnA") || Input.GetMouseButtonDown(0))
         {
                 SceneManager.LoadScene("Title");
             

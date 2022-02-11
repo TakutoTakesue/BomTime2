@@ -10,6 +10,8 @@ public class Play_UI_Manager : MonoBehaviour
 {
     [SerializeField] Text txtBullet_cnt;
     [SerializeField] Text txtTime;
+    [SerializeField] Text txtGameOver;
+    [SerializeField] Text txtGameClear;
 
     [SerializeField] GameObject HealImage;
     
@@ -52,6 +54,8 @@ public class Play_UI_Manager : MonoBehaviour
     // 初期化
     public void Init()
     {
+        txtGameOver.text = "";
+        txtGameClear.text = "";
 
     }
 
@@ -85,7 +89,16 @@ public class Play_UI_Manager : MonoBehaviour
     {
         slider.value = (float)PlayerHP / (float)MaxHP;
     }
+    
+    void GameOver(bool GameOverFlg)
+    {
+        txtGameOver.text = "Game Over";
+    }
 
+    void GameClear(bool GameClear)
+    {
+        txtGameOver.text = "GameClear";
+    }
    
     // Update is called once per frame
     void Update()
@@ -96,5 +109,8 @@ public class Play_UI_Manager : MonoBehaviour
 
         Bullet_UI(act_Player.GetBulletCnt);
         HealItem_UI(act_Player.GetEhomaki);
+
+        GameOver(play_timeManager.GameOverFlg);
+        GameClear(play_timeManager.GameClearFlg);
     }
 }
