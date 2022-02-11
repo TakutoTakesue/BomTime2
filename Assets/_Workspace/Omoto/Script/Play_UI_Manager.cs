@@ -92,12 +92,14 @@ public class Play_UI_Manager : MonoBehaviour
     
     void GameOver(bool GameOverFlg)
     {
+        if(GameOverFlg)
         txtGameOver.text = "Game Over";
     }
 
     void GameClear(bool GameClear)
     {
-        txtGameOver.text = "GameClear";
+        if(GameClear)
+        txtGameClear.text = "GameClear";
     }
    
     // Update is called once per frame
