@@ -17,16 +17,19 @@ public class SelectAction : MonoBehaviour
 
     void Stage1_onclick()
     {
+        //AudioManager.Instance.StopBgm(2.0f);
         SceneManager.LoadScene("Stage1");
     }
 
     void Stage2_onclick()
     {
+        //AudioManager.Instance.StopBgm(2.0f);
         SceneManager.LoadScene("Stage2");
     }
 
     void Stage3_onclick()
     {
+        //AudioManager.Instance.StopBgm(2.0f);
         SceneManager.LoadScene("Stage3");
     }
 

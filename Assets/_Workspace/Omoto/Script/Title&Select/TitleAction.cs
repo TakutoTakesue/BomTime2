@@ -15,6 +15,8 @@ public class TitleAction : MonoBehaviour
     void Start()
     {
         txtNavi.text = "Press A Start";
+
+        //AudioManager.Instance.StartBgm("Title_BGM", 2.0f);
     }
 
     // Update is called once per frame
